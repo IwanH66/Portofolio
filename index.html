@@ -66,7 +66,8 @@
             description: "Specializing in lean manufacturing, production optimization, and continuous improvement. Transforming complex industrial challenges into scalable, efficient operational systems with over 8+ years of field experience.",
             location: "Jakarta, Indonesia",
             email: "alexander.eng@example.com",
-            photoUrl: "https://placehold.co/600x800/101C2C/FFFFFF?text=AR"
+            photoUrl: "https://placehold.co/600x800/101C2C/FFFFFF?text=AR",
+            photoSettings: { zoom: 100, posX: 50, posY: 50 }
           },
           about: {
             summary: "A results-driven Industrial Engineer with a proven track record of increasing production efficiency by 35% through Lean Six Sigma methodologies. Adept at cross-functional team leadership, supply chain integration, and deploying data-driven quality management systems.",
@@ -220,11 +221,17 @@
                 
                 <div className="flex-1 w-full flex justify-center md:justify-end relative">
                   <div className="absolute inset-0 bg-[#3478F6] rounded transform translate-x-4 translate-y-4 opacity-10 hidden md:block"></div>
-                  <img 
-                    src={data.hero.photoUrl} 
-                    alt="Profile" 
-                    className="w-2/3 max-w-[280px] md:w-full md:max-w-md h-auto object-cover rounded shadow-2xl relative z-10 filter grayscale hover:grayscale-0 transition-all duration-700"
-                  />
+                  <div className="w-2/3 max-w-[280px] md:w-full md:max-w-md rounded shadow-2xl relative z-10 overflow-hidden filter grayscale hover:grayscale-0 transition-all duration-700 aspect-[3/4]">
+                    <img 
+                      src={data.hero.photoUrl} 
+                      alt="Profile" 
+                      className="w-full h-full object-cover"
+                      style={{
+                        objectPosition: `${data.hero.photoSettings?.posX || 50}% ${data.hero.photoSettings?.posY || 50}%`,
+                        transform: `scale(${(data.hero.photoSettings?.zoom || 100) / 100})`
+                      }}
+                    />
+                  </div>
                 </div>
               </section>
 
@@ -412,7 +419,6 @@
 
           const handleSave = () => {
             setData(formData);
-            alert("Changes Published Successfully!");
           };
 
           return (
@@ -485,20 +491,6 @@
                       <div className="p-8 space-y-6">
                         <div className="grid grid-cols-2 gap-6">
                           <div className="space-y-2">
-                            <label className="block font-medium text-gray-700">Full Name</label>
-                            <input type="text" value={formData.hero.name} onChange={(e) => handleNestedChange('hero', 'name', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded outline-none" />
-                          </div>
-                          <div className="space-y-2">
-                            <label className="block font-medium text-gray-700">Professional Headline</label>
-                            <input type="text" value={formData.hero.headline} onChange={(e) => handleNestedChange('hero', 'headline', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded outline-none" />
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <label className="block font-medium text-gray-700">Short Description</label>
-                          <textarea rows="4" value={formData.hero.description} onChange={(e) => handleNestedChange('hero', 'description', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded outline-none resize-none"></textarea>
-                        </div>
-                        <div className="grid grid-cols-3 gap-6">
-                          <div className="space-y-2">
                             <label className="block font-medium text-gray-700">Location</label>
                             <input type="text" value={formData.hero.location} onChange={(e) => handleNestedChange('hero', 'location', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded outline-none" />
                           </div>
@@ -506,11 +498,83 @@
                             <label className="block font-medium text-gray-700">Email Address</label>
                             <input type="email" value={formData.hero.email} onChange={(e) => handleNestedChange('hero', 'email', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded outline-none" />
                           </div>
-                          <div className="space-y-2">
-                            <label className="block font-medium text-gray-700">Photo URL</label>
-                            <input type="text" value={formData.hero.photoUrl} onChange={(e) => handleNestedChange('hero', 'photoUrl', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded outline-none" />
+                        </div>
+
+                        {/* FOTO & CROP SETTINGS */}
+                        <div className="bg-gray-50 p-6 rounded border border-gray-200 mt-6">
+                          <h3 className="font-bold text-gray-800 mb-4 flex items-center"><span className="mr-2">🖼️</span> Pengaturan Foto Profil (G-Drive / Web Link)</h3>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                              <div className="space-y-2">
+                                <label className="block font-medium text-gray-700 text-sm">Direct Link Foto</label>
+                                <input 
+                                  type="text" 
+                                  placeholder="Paste link gambar di sini..."
+                                  value={formData.hero.photoUrl} 
+                                  onChange={(e) => handleNestedChange('hero', 'photoUrl', e.target.value)} 
+                                  className="w-full px-4 py-2 border border-gray-300 rounded outline-none" 
+                                />
+                                <p className="text-xs text-gray-500">Pastikan link sudah diset "Anyone with the link can view".</p>
+                              </div>
+
+                              <div className="space-y-2">
+                                <label className="flex justify-between font-medium text-gray-700 text-sm">
+                                  <span>Zoom (Scale)</span>
+                                  <span className="text-[#EE4D2D]">{formData.hero.photoSettings?.zoom || 100}%</span>
+                                </label>
+                                <input 
+                                  type="range" min="50" max="250" 
+                                  value={formData.hero.photoSettings?.zoom || 100} 
+                                  onChange={(e) => handleNestedChange('hero', 'photoSettings', { ...(formData.hero.photoSettings || {zoom:100,posX:50,posY:50}), zoom: e.target.value })}
+                                  className="w-full cursor-ew-resize accent-[#EE4D2D]"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <label className="flex justify-between font-medium text-gray-700 text-sm">
+                                  <span>Geser Horizontal (X)</span>
+                                  <span className="text-[#EE4D2D]">{formData.hero.photoSettings?.posX || 50}%</span>
+                                </label>
+                                <input 
+                                  type="range" min="0" max="100" 
+                                  value={formData.hero.photoSettings?.posX || 50} 
+                                  onChange={(e) => handleNestedChange('hero', 'photoSettings', { ...(formData.hero.photoSettings || {zoom:100,posX:50,posY:50}), posX: e.target.value })}
+                                  className="w-full cursor-ew-resize accent-[#EE4D2D]"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <label className="flex justify-between font-medium text-gray-700 text-sm">
+                                  <span>Geser Vertikal (Y)</span>
+                                  <span className="text-[#EE4D2D]">{formData.hero.photoSettings?.posY || 50}%</span>
+                                </label>
+                                <input 
+                                  type="range" min="0" max="100" 
+                                  value={formData.hero.photoSettings?.posY || 50} 
+                                  onChange={(e) => handleNestedChange('hero', 'photoSettings', { ...(formData.hero.photoSettings || {zoom:100,posX:50,posY:50}), posY: e.target.value })}
+                                  className="w-full cursor-ew-resize accent-[#EE4D2D]"
+                                />
+                              </div>
+                            </div>
+                            
+                            <div className="flex flex-col items-center justify-center">
+                              <p className="font-medium text-gray-700 text-sm mb-2">Live Preview Area</p>
+                              <div className="w-[180px] h-[240px] bg-gray-200 rounded shadow-inner overflow-hidden relative border border-gray-300">
+                                <img 
+                                  src={formData.hero.photoUrl} 
+                                  alt="Preview" 
+                                  className="w-full h-full object-cover"
+                                  style={{
+                                    objectPosition: `${formData.hero.photoSettings?.posX || 50}% ${formData.hero.photoSettings?.posY || 50}%`,
+                                    transform: `scale(${(formData.hero.photoSettings?.zoom || 100) / 100})`
+                                  }}
+                                />
+                              </div>
+                            </div>
                           </div>
                         </div>
+
                       </div>
                     )}
 
@@ -548,10 +612,72 @@
         const App = () => {
           const [view, setView] = useState('public');
           const [portfolioData, setPortfolioData] = useState(initialData);
+          const [db, setDb] = useState(null);
+          const [appId, setAppId] = useState('');
+
+          useEffect(() => {
+            const initFirebase = async () => {
+              try {
+                // Dynamically import Firebase
+                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
+                const { getAuth, signInWithCustomToken, signInAnonymously } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js');
+                const { getFirestore, doc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
+
+                const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'default-portfolio-app';
+                setAppId(currentAppId);
+                const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+                
+                if (!firebaseConfig) return;
+
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                const firestoreDb = getFirestore(app);
+                setDb(firestoreDb);
+                
+                if (typeof __initial_auth_token !== 'undefined') {
+                  await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                  await signInAnonymously(auth);
+                }
+                
+                const user = auth.currentUser;
+                if (!user) return;
+
+                // Load Data Real-time from Cloud Database
+                const docRef = doc(firestoreDb, 'artifacts', currentAppId, 'public', 'data', 'portfolioData', 'main');
+                onSnapshot(docRef, (docSnap) => {
+                  if (docSnap.exists()) {
+                    setPortfolioData(docSnap.data());
+                  }
+                }, (err) => console.error("Firebase Read Error:", err));
+
+              } catch (error) {
+                console.error("Firebase Init Error:", error);
+              }
+            };
+            initFirebase();
+          }, []);
+
+          const handleSaveData = async (newData) => {
+            setPortfolioData(newData);
+            if (db && appId) {
+              try {
+                const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'portfolioData', 'main');
+                await setDoc(docRef, newData);
+                alert("Berhasil! Perubahan telah disimpan permanen ke dalam Cloud Database.");
+              } catch (error) {
+                console.error("Firebase Save Error:", error);
+                alert("Gagal menyimpan ke database.");
+              }
+            } else {
+              alert("Perubahan disimpan sementara (Fitur Cloud belum aktif pada sesi lokal ini).");
+            }
+          };
 
           return view === 'public' 
             ? <PublicPortfolio data={portfolioData} setView={setView} />
-            : <AdminDashboard data={portfolioData} setData={setPortfolioData} setView={setView} />;
+            : <AdminDashboard data={portfolioData} setData={handleSaveData} setView={setView} />;
         };
 
         // --- RENDER KE DALAM HTML ---
