@@ -117,6 +117,30 @@ const PublicPortfolio = ({ data, setView }) => {
   const [activeProject, setActiveProject] = useState(null);
   const [activeCategory, setActiveCategory] = useState('All');
 
+  // Secret shortcut (P + L) to open admin
+  useEffect(() => {
+    const keysPressed = {};
+    const handleKeyDown = (e) => {
+      keysPressed[e.key.toLowerCase()] = true;
+      if (keysPressed['p'] && keysPressed['l']) {
+        setView('admin');
+        keysPressed['p'] = false;
+        keysPressed['l'] = false;
+      }
+    };
+    const handleKeyUp = (e) => {
+      keysPressed[e.key.toLowerCase()] = false;
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [setView]);
+
   // Filter Categories
   const categories = ['All', ...new Set(data.projects.map(p => p.category))];
   const filteredProjects = activeCategory === 'All' 
@@ -144,47 +168,47 @@ const PublicPortfolio = ({ data, setView }) => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 min-h-[90vh]">
-        <div className="flex-1 space-y-8 animate-fade-in-up">
-          <div className="space-y-4">
-            <h2 className="text-[#3478F6] font-semibold tracking-wider text-sm uppercase">Portfolio & Curriculum Vitae</h2>
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] text-[#101C2C]">
+      <section className="pt-28 pb-12 px-6 max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-10 md:gap-16 min-h-[90vh]">
+        <div className="flex-1 space-y-6 md:space-y-8 animate-fade-in-up text-center md:text-left flex flex-col items-center md:items-start">
+          <div className="space-y-3 md:space-y-4">
+            <h2 className="text-[#3478F6] font-semibold tracking-wider text-xs md:text-sm uppercase">Portfolio & Curriculum Vitae</h2>
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] text-[#101C2C]">
               {data.hero.name}
             </h1>
-            <p className="text-2xl text-[#64748B] font-light">
+            <p className="text-xl md:text-2xl text-[#64748B] font-light">
               {data.hero.headline}
             </p>
           </div>
           
-          <p className="text-lg text-[#64748B] leading-relaxed max-w-xl">
+          <p className="text-base md:text-lg text-[#64748B] leading-relaxed max-w-xl">
             {data.hero.description}
           </p>
           
-          <div className="flex flex-wrap gap-4 items-center">
-            <span className="flex items-center text-sm font-medium text-[#101C2C] bg-white px-4 py-2 rounded shadow-sm border border-gray-100">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 items-center w-full sm:w-auto">
+            <span className="flex items-center justify-center text-xs md:text-sm font-medium text-[#101C2C] bg-white px-4 py-2 rounded shadow-sm border border-gray-100 w-full sm:w-auto">
               <span className="mr-2 text-[#3478F6]"><IconMapPin /></span> {data.hero.location}
             </span>
-            <a href={`mailto:${data.hero.email}`} className="flex items-center text-sm font-medium text-[#101C2C] bg-white px-4 py-2 rounded shadow-sm border border-gray-100 hover:text-[#3478F6] transition-colors">
+            <a href={`mailto:${data.hero.email}`} className="flex items-center justify-center text-xs md:text-sm font-medium text-[#101C2C] bg-white px-4 py-2 rounded shadow-sm border border-gray-100 hover:text-[#3478F6] transition-colors w-full sm:w-auto">
               <span className="mr-2 text-[#3478F6]"><IconMail /></span> {data.hero.email}
             </a>
           </div>
 
-          <div className="flex gap-4 pt-4">
-            <a href="#projects" className="px-8 py-4 bg-[#3478F6] text-white font-medium rounded hover:bg-[#172B45] transition-colors shadow-lg shadow-blue-500/20">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4 w-full sm:w-auto">
+            <a href="#projects" className="px-8 py-3 md:py-4 bg-[#3478F6] text-white font-medium rounded hover:bg-[#172B45] transition-colors shadow-lg shadow-blue-500/20 text-center">
               View Portfolio
             </a>
-            <button className="flex items-center px-8 py-4 bg-white text-[#101C2C] font-medium rounded border border-gray-200 hover:border-[#3478F6] transition-colors">
+            <button className="flex items-center justify-center px-8 py-3 md:py-4 bg-white text-[#101C2C] font-medium rounded border border-gray-200 hover:border-[#3478F6] transition-colors">
               <span className="mr-2"><IconDownload /></span> Download CV
             </button>
           </div>
         </div>
         
         <div className="flex-1 w-full flex justify-center md:justify-end relative">
-          <div className="absolute inset-0 bg-[#3478F6] rounded transform translate-x-4 translate-y-4 opacity-10"></div>
+          <div className="absolute inset-0 bg-[#3478F6] rounded transform translate-x-4 translate-y-4 opacity-10 hidden md:block"></div>
           <img 
             src={data.hero.photoUrl} 
             alt="Profile" 
-            className="w-full max-w-md h-auto object-cover rounded shadow-2xl relative z-10 filter grayscale hover:grayscale-0 transition-all duration-700"
+            className="w-2/3 max-w-[280px] md:w-full md:max-w-md h-auto object-cover rounded shadow-2xl relative z-10 filter grayscale hover:grayscale-0 transition-all duration-700"
           />
         </div>
       </section>
@@ -365,18 +389,7 @@ const PublicPortfolio = ({ data, setView }) => {
       {/* Footer & Secret Admin Button */}
       <footer className="bg-[#101C2C] py-8 border-t border-[#172B45] text-center relative">
         <p className="text-[#64748B] text-sm">© {new Date().getFullYear()} {data.hero.name}. All rights reserved.</p>
-        
-        {/* Floating Admin Button */}
-        <button 
-          onClick={() => setView('admin')}
-          className="fixed bottom-6 right-6 p-3 bg-white text-[#101C2C] rounded-full shadow-xl hover:bg-[#3478F6] hover:text-white transition-all z-40 group"
-          title="Admin Login"
-        >
-          <IconSettings />
-          <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-[#101C2C] text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-            Admin Dashboard
-          </span>
-        </button>
+        {/* The gear button has been completely removed for security. Access via P + L keys */}
       </footer>
     </div>
   );
