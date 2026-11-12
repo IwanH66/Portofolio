@@ -625,9 +625,8 @@
           useEffect(() => {
             const initFirebase = async () => {
               try {
-                // Import SDK Firebase
+                // Import SDK Firebase (HANYA APP & FIRESTORE)
                 const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
-                const { getAuth, signInAnonymously } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js');
                 const { getFirestore, doc, onSnapshot, setDoc, getDoc } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
 
                 // KODE FIREBASE ANDA
@@ -642,26 +641,20 @@
                 };
 
                 const app = initializeApp(firebaseConfig);
-                const auth = getAuth(app);
                 const firestoreDb = getFirestore(app);
                 setDb(firestoreDb);
                 
-                // 1. Wajib Auth Sebelum akses DB
-                await signInAnonymously(auth);
-                const user = auth.currentUser;
-                if (!user) return;
-
-                // 2. Tentukan Alamat Dokumen di Database Anda
+                // 1. Tentukan Alamat Dokumen di Database Anda
                 const docRef = doc(firestoreDb, 'artifacts', appId, 'public', 'data', 'main');
 
-                // 3. AUTO-SEED: Cek apakah DB masih kosong? Jika ya, isi dengan initialData
+                // 2. AUTO-SEED: Cek apakah DB masih kosong? Jika ya, isi dengan initialData
                 const docSnap = await getDoc(docRef);
                 if (!docSnap.exists()) {
                     await setDoc(docRef, initialData);
                     console.log("Database berhasil dibuat secara otomatis.");
                 }
 
-                // 4. Sinkronisasi Real-Time (Setiap perubahan di DB otomatis merubah Website)
+                // 3. Sinkronisasi Real-Time (Setiap perubahan di DB otomatis merubah Website)
                 onSnapshot(docRef, (snap) => {
                   if (snap.exists()) {
                     setPortfolioData(snap.data());
@@ -680,9 +673,14 @@
             setPortfolioData(newData); // Update UI Langsung
             
             if (db) {
-              const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
-              const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'main');
-              await setDoc(docRef, newData);
+              try {
+                const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'main');
+                await setDoc(docRef, newData);
+              } catch (error) {
+                console.error("Gagal menyimpan ke Firebase:", error);
+                throw error; // Melempar error agar ditangkap oleh blok catch di AdminDashboard
+              }
             }
           };
 
