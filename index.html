@@ -94,6 +94,7 @@
             {
               id: 1,
               company: "Astra International",
+              logo: "",
               role: "Senior Process Engineer",
               period: "2020 - Present",
               location: "Jakarta",
@@ -127,10 +128,32 @@
         // SEGMENT 3: ADMIN SUB-COMPONENTS
         // ==========================================
         const ExperienceEditor = ({ exp, onSave, onCancel }) => {
-            const [local, setLocal] = useState(exp || { id: Date.now(), company: '', role: '', period: '', location: '', department: '', description: '', achievements: [] });
+            const [local, setLocal] = useState(exp || { id: Date.now(), company: '', logo: '', role: '', period: '', location: '', department: '', description: '', achievements: [] });
+            
+            const handleImg = (e) => {
+                const file = e.target.files[0];
+                if (file) compressImage(file, (base64) => setLocal({...local, logo: base64}));
+            };
+
             return (
                 <div className="space-y-6">
                     <h3 className="text-lg font-bold text-gray-800 border-b pb-2">{exp ? 'Edit Experience' : 'Add New Experience'}</h3>
+                    
+                    <div className="flex items-center gap-4 p-4 border rounded bg-gray-50">
+                        <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-gray-300 rounded cursor-pointer bg-white hover:bg-gray-50 overflow-hidden">
+                            {local.logo ? (
+                                <img src={local.logo} className="w-full h-full object-contain p-1" alt="Logo" />
+                            ) : (
+                                <div className="text-center text-gray-400"><IconUpload /><span className="text-[10px] block mt-1">Logo PT</span></div>
+                            )}
+                            <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={handleImg} />
+                        </label>
+                        <div className="flex-1 space-y-2">
+                            <input type="text" placeholder="Atau paste link URL logo..." value={local.logo} onChange={e => setLocal({...local, logo: e.target.value})} className="w-full border p-2 rounded text-xs" />
+                            <p className="text-xs text-gray-500">Upload logo format JPG/PNG, otomatis dikompres.</p>
+                        </div>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4">
                         <input type="text" placeholder="Company Name" value={local.company} onChange={e => setLocal({...local, company: e.target.value})} className="border p-2 rounded" />
                         <input type="text" placeholder="Job Title / Role" value={local.role} onChange={e => setLocal({...local, role: e.target.value})} className="border p-2 rounded" />
@@ -292,6 +315,23 @@
                       </div>
                     )}
 
+                    {activeTab === 'About' && (
+                      <div className="p-8 space-y-6">
+                        <div className="space-y-2">
+                          <label className="block font-medium text-gray-700">Professional Summary (About Me)</label>
+                          <textarea rows="4" value={formData.about.summary} onChange={(e) => handleNestedChange('about', 'summary', e.target.value)} className="w-full px-4 py-2 border rounded outline-none focus:border-[#EE4D2D]"></textarea>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="block font-medium text-gray-700">Education Details</label>
+                          <input type="text" value={formData.about.education} onChange={(e) => handleNestedChange('about', 'education', e.target.value)} className="w-full px-4 py-2 border rounded outline-none focus:border-[#EE4D2D]" />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="block font-medium text-gray-700">Career Focus Areas</label>
+                          <input type="text" value={formData.about.focus} onChange={(e) => handleNestedChange('about', 'focus', e.target.value)} className="w-full px-4 py-2 border rounded outline-none focus:border-[#EE4D2D]" />
+                        </div>
+                      </div>
+                    )}
+
                     {activeTab === 'Experience' && (
                       <div className="p-8">
                         {editingItem?.type === 'exp' ? (
@@ -309,7 +349,10 @@
                             <button onClick={() => setEditingItem({type: 'exp', id: 'new'})} className="mb-4 px-4 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded font-medium">+ Add New Experience</button>
                             {(formData.experience || []).map((exp) => (
                               <div key={exp.id} className="flex justify-between items-center p-4 border rounded bg-gray-50">
-                                <div><div className="font-bold">{exp.role}</div><div className="text-sm text-gray-500">{exp.company} • {exp.period}</div></div>
+                                <div className="flex items-center gap-4">
+                                  {exp.logo && <img src={exp.logo} className="w-10 h-10 rounded object-contain border p-1 bg-white" alt="" />}
+                                  <div><div className="font-bold">{exp.role}</div><div className="text-sm text-gray-500">{exp.company} • {exp.period}</div></div>
+                                </div>
                                 <div className="space-x-2">
                                   <button onClick={() => setEditingItem({type: 'exp', id: exp.id})} className="px-3 py-1 bg-white border rounded">Edit</button>
                                   <button onClick={() => setFormData({...formData, experience: formData.experience.filter(e => e.id !== exp.id)})} className="px-3 py-1 bg-red-50 text-red-500 border rounded">Delete</button>
@@ -421,7 +464,10 @@
                         <div className="absolute left-[-4px] md:left-1/5 md:-ml-[21px] top-2 w-2 h-2 rounded-full bg-[#3478F6] ring-4 ring-[#F7F8FA]"></div>
                         <div className="md:col-span-4 bg-white p-8 rounded border shadow-sm group">
                           <h3 className="text-2xl font-bold mb-1">{exp.role}</h3>
-                          <h4 className="text-lg text-[#64748B] mb-4">{exp.company}</h4>
+                          <div className="flex items-center gap-3 mb-4 mt-2">
+                            {exp.logo && <img src={exp.logo} alt={exp.company} className="w-10 h-10 object-contain rounded border p-1 bg-gray-50" />}
+                            <h4 className="text-lg text-[#64748B]">{exp.company}</h4>
+                          </div>
                           <p className="text-[#64748B] mb-6">{exp.description}</p>
                         </div>
                       </div>
