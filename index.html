@@ -396,10 +396,12 @@
                 await setData(formData);
                 setNotification('✅ Berhasil! Perubahan tersimpan permanen di Firebase.');
             } catch(e) {
-                setNotification('❌ Terjadi kesalahan saat menyimpan.');
+                // Menampilkan error asli dari sistem agar kita tahu masalah pastinya
+                setNotification('❌ Error: ' + (e.message || 'Gagal menyimpan.'));
+                console.error(e);
             }
-            // Hilangkan notifikasi setelah 3 detik
-            setTimeout(() => setNotification(''), 3500);
+            // Hilangkan notifikasi setelah 5 detik
+            setTimeout(() => setNotification(''), 5000);
           };
 
           return (
@@ -618,9 +620,7 @@
           const [view, setView] = useState('public');
           const [portfolioData, setPortfolioData] = useState(initialData);
           const [db, setDb] = useState(null);
-          
-          // ID untuk folder database Anda
-          const appId = "portooooo-8ffd1";
+          const [fbApi, setFbApi] = useState(null);
 
           useEffect(() => {
             const initFirebase = async () => {
@@ -628,6 +628,8 @@
                 // Import SDK Firebase (HANYA APP & FIRESTORE)
                 const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
                 const { getFirestore, doc, onSnapshot, setDoc, getDoc } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
+                
+                setFbApi({ doc, setDoc });
 
                 // KODE FIREBASE ANDA
                 const firebaseConfig = {
@@ -644,8 +646,9 @@
                 const firestoreDb = getFirestore(app);
                 setDb(firestoreDb);
                 
-                // 1. Tentukan Alamat Dokumen di Database Anda
-                const docRef = doc(firestoreDb, 'artifacts', appId, 'public', 'data', 'main');
+                // 1. Tentukan Alamat Dokumen di Database Anda (HARUS GENAP: Koleksi -> Dokumen)
+                // Ini yang membuat sistem Anda error sebelumnya. Sekarang sudah diperbaiki!
+                const docRef = doc(firestoreDb, 'portfolio', 'main_data');
 
                 // 2. AUTO-SEED: Cek apakah DB masih kosong? Jika ya, isi dengan initialData
                 const docSnap = await getDoc(docRef);
@@ -672,15 +675,16 @@
           const handleSaveData = async (newData) => {
             setPortfolioData(newData); // Update UI Langsung
             
-            if (db) {
-              try {
-                const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'main');
-                await setDoc(docRef, newData);
-              } catch (error) {
-                console.error("Gagal menyimpan ke Firebase:", error);
-                throw error; // Melempar error agar ditangkap oleh blok catch di AdminDashboard
-              }
+            if (!db || !fbApi) {
+              throw new Error("Koneksi Database Belum Siap. Tunggu beberapa detik.");
+            }
+            
+            try {
+              const docRef = fbApi.doc(db, 'portfolio', 'main_data');
+              await fbApi.setDoc(docRef, newData);
+            } catch (error) {
+              console.error("Gagal menyimpan ke Firebase:", error);
+              throw error; // Melempar error agar ditangkap oleh blok catch di AdminDashboard
             }
           };
 
