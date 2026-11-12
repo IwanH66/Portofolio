@@ -1,17 +1,623 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default function App() {
+// --- ICON COMPONENTS (Inline SVG untuk menghindari error external library) ---
+const IconMapPin = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+);
+const IconMail = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+);
+const IconLinkedin = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+);
+const IconDownload = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+);
+const IconSettings = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+);
+const IconClose = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+);
+const IconDashboard = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+);
+const IconEdit = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+);
+const IconBriefcase = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+);
+const IconFileText = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+);
+
+// --- INITIAL MOCK DATA (Simulasi Database) ---
+const initialData = {
+  hero: {
+    name: "Alexander Ryandi",
+    headline: "Industrial & Manufacturing Engineer",
+    description: "Specializing in lean manufacturing, production optimization, and continuous improvement. Transforming complex industrial challenges into scalable, efficient operational systems with over 8+ years of field experience.",
+    location: "Jakarta, Indonesia",
+    email: "alexander.eng@example.com",
+    linkedin: "linkedin.com/in/alexander-eng",
+    photoUrl: "https://placehold.co/600x800/101C2C/FFFFFF?text=AR"
+  },
+  about: {
+    summary: "A results-driven Industrial Engineer with a proven track record of increasing production efficiency by 35% through Lean Six Sigma methodologies. Adept at cross-functional team leadership, supply chain integration, and deploying data-driven quality management systems.",
+    education: "B.Sc. in Industrial Engineering - Institut Teknologi Bandung (ITB)",
+    focus: "Production Planning (PPIC), Quality Control, and Process Automation."
+  },
+  experience: [
+    {
+      id: 1,
+      company: "Astra International",
+      role: "Senior Process Engineer",
+      period: "2020 - Present",
+      location: "Jakarta",
+      description: "Leading the process optimization for automotive parts manufacturing lines.",
+      achievements: [
+        "Reduced cycle time by 15% using time-motion studies.",
+        "Implemented automated quality inspection reducing defect rate to < 0.5%."
+      ]
+    },
+    {
+      id: 2,
+      company: "Unilever Indonesia",
+      role: "Production Supervisor",
+      period: "2017 - 2020",
+      location: "Cikarang",
+      description: "Managed daily production operations for personal care products.",
+      achievements: [
+        "Achieved 99.8% OEE (Overall Equipment Effectiveness) in Q4 2019.",
+        "Led a team of 45 operators and 3 technicians."
+      ]
+    }
+  ],
+  projects: [
+    {
+      id: 1,
+      title: "Lean Assembly Line Transformation",
+      category: "Continuous Improvement",
+      summary: "Redesign of the main assembly line to minimize bottlenecks and worker fatigue.",
+      cover: "https://placehold.co/800x500/172B45/FFFFFF?text=Lean+Assembly",
+      tools: ["AutoCAD", "Minitab", "Six Sigma"],
+      detail: {
+        background: "The existing assembly line had a 20% idle time due to uneven task distribution.",
+        objectives: "Balance the line, reduce takt time, and improve ergonomics.",
+        methodology: "Value Stream Mapping (VSM), Line Balancing, 5S.",
+        results: "Increased daily output by 400 units, reduced overtime costs by 25%."
+      }
+    },
+    {
+      id: 2,
+      title: "Predictive Maintenance System",
+      category: "Data Analysis",
+      summary: "Implemented IoT sensors to predict machine failures before they occur.",
+      cover: "https://placehold.co/800x500/172B45/FFFFFF?text=IoT+Maintenance",
+      tools: ["Python", "PowerBI", "IoT Sensors"],
+      detail: {
+        background: "Frequent unplanned downtime was costing the company $50k/month.",
+        objectives: "Predict motor failures 48 hours in advance.",
+        methodology: "Vibration analysis, Machine Learning (Random Forest).",
+        results: "Decreased unplanned downtime by 85%. Saved $600k annually."
+      }
+    }
+  ],
+  skills: {
+    "Manufacturing": ["Lean Six Sigma", "5S", "Kaizen", "OEE Tracking"],
+    "Software & Tools": ["AutoCAD", "Minitab", "SAP ERP", "PowerBI"]
+  }
+};
+
+// --- COMPONENTS ---
+
+// 1. PUBLIC PORTFOLIO
+const PublicPortfolio = ({ data, setView }) => {
+  const [activeProject, setActiveProject] = useState(null);
+  const [activeCategory, setActiveCategory] = useState('All');
+
+  // Filter Categories
+  const categories = ['All', ...new Set(data.projects.map(p => p.category))];
+  const filteredProjects = activeCategory === 'All' 
+    ? data.projects 
+    : data.projects.filter(p => p.category === activeCategory);
+
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      height: '100vh', 
-      backgroundColor: '#f0f2f5',
-      fontFamily: 'sans-serif',
-      color: '#333'
-    }}>
-      <h1>Hello Wodddddddddrld!</h1>
+    <div className="min-h-screen bg-[#F7F8FA] font-sans text-[#101C2C] selection:bg-[#3478F6] selection:text-white">
+      
+      {/* Navigation */}
+      <nav className="fixed w-full top-0 bg-white/80 backdrop-blur-md z-40 border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="font-bold text-xl tracking-tighter text-[#101C2C]">
+            {data.hero.name.split(' ')[0]}<span className="text-[#3478F6]">.</span>
+          </div>
+          <div className="hidden md:flex space-x-8 text-sm font-medium text-[#64748B]">
+            <a href="#about" className="hover:text-[#101C2C] transition-colors">About</a>
+            <a href="#experience" className="hover:text-[#101C2C] transition-colors">Experience</a>
+            <a href="#projects" className="hover:text-[#101C2C] transition-colors">Projects</a>
+          </div>
+          <a href="#contact" className="px-5 py-2 bg-[#101C2C] text-white text-sm font-medium rounded hover:bg-[#3478F6] transition-colors">
+            Contact Me
+          </a>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 min-h-[90vh]">
+        <div className="flex-1 space-y-8 animate-fade-in-up">
+          <div className="space-y-4">
+            <h2 className="text-[#3478F6] font-semibold tracking-wider text-sm uppercase">Portfolio & Curriculum Vitae</h2>
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] text-[#101C2C]">
+              {data.hero.name}
+            </h1>
+            <p className="text-2xl text-[#64748B] font-light">
+              {data.hero.headline}
+            </p>
+          </div>
+          
+          <p className="text-lg text-[#64748B] leading-relaxed max-w-xl">
+            {data.hero.description}
+          </p>
+          
+          <div className="flex flex-wrap gap-4 items-center">
+            <span className="flex items-center text-sm font-medium text-[#101C2C] bg-white px-4 py-2 rounded shadow-sm border border-gray-100">
+              <span className="mr-2 text-[#3478F6]"><IconMapPin /></span> {data.hero.location}
+            </span>
+            <a href={`mailto:${data.hero.email}`} className="flex items-center text-sm font-medium text-[#101C2C] bg-white px-4 py-2 rounded shadow-sm border border-gray-100 hover:text-[#3478F6] transition-colors">
+              <span className="mr-2 text-[#3478F6]"><IconMail /></span> {data.hero.email}
+            </a>
+          </div>
+
+          <div className="flex gap-4 pt-4">
+            <a href="#projects" className="px-8 py-4 bg-[#3478F6] text-white font-medium rounded hover:bg-[#172B45] transition-colors shadow-lg shadow-blue-500/20">
+              View Portfolio
+            </a>
+            <button className="flex items-center px-8 py-4 bg-white text-[#101C2C] font-medium rounded border border-gray-200 hover:border-[#3478F6] transition-colors">
+              <span className="mr-2"><IconDownload /></span> Download CV
+            </button>
+          </div>
+        </div>
+        
+        <div className="flex-1 w-full flex justify-center md:justify-end relative">
+          <div className="absolute inset-0 bg-[#3478F6] rounded transform translate-x-4 translate-y-4 opacity-10"></div>
+          <img 
+            src={data.hero.photoUrl} 
+            alt="Profile" 
+            className="w-full max-w-md h-auto object-cover rounded shadow-2xl relative z-10 filter grayscale hover:grayscale-0 transition-all duration-700"
+          />
+        </div>
+      </section>
+
+      {/* About & Stats (Editorial Layout) */}
+      <section id="about" className="py-20 bg-white border-y border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-12">
+          <div className="md:col-span-4">
+            <h2 className="text-3xl font-bold text-[#101C2C] mb-6">About Architecture</h2>
+            <div className="h-1 w-20 bg-[#3478F6]"></div>
+          </div>
+          <div className="md:col-span-8 space-y-8">
+            <p className="text-xl leading-relaxed text-[#101C2C] font-medium">
+              {data.about.summary}
+            </p>
+            <div className="grid sm:grid-cols-2 gap-8 pt-8 border-t border-gray-100">
+              <div>
+                <h4 className="text-sm text-[#64748B] uppercase tracking-wider mb-2">Education</h4>
+                <p className="font-medium text-[#101C2C]">{data.about.education}</p>
+              </div>
+              <div>
+                <h4 className="text-sm text-[#64748B] uppercase tracking-wider mb-2">Career Focus</h4>
+                <p className="font-medium text-[#101C2C]">{data.about.focus}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Experience Timeline */}
+      <section id="experience" className="py-24 px-6 max-w-7xl mx-auto">
+        <h2 className="text-4xl font-bold text-[#101C2C] mb-16 text-center">Professional Timeline</h2>
+        <div className="space-y-12">
+          {data.experience.map((exp) => (
+            <div key={exp.id} className="relative pl-8 md:pl-0">
+              <div className="md:grid md:grid-cols-5 md:gap-8 items-start">
+                <div className="hidden md:block col-span-1 text-right pt-1">
+                  <div className="text-lg font-bold text-[#101C2C]">{exp.period}</div>
+                  <div className="text-sm text-[#64748B]">{exp.location}</div>
+                </div>
+                
+                {/* Timeline Line & Dot */}
+                <div className="absolute left-0 md:left-1/5 md:-ml-[17px] top-2 bottom-0 w-px bg-gray-200"></div>
+                <div className="absolute left-[-4px] md:left-1/5 md:-ml-[21px] top-2 w-2 h-2 rounded-full bg-[#3478F6] ring-4 ring-[#F7F8FA]"></div>
+                
+                <div className="md:col-span-4 bg-white p-8 rounded border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
+                  <div className="md:hidden mb-4">
+                    <div className="text-sm font-bold text-[#3478F6]">{exp.period}</div>
+                  </div>
+                  <h3 className="text-2xl font-bold text-[#101C2C] mb-1">{exp.role}</h3>
+                  <h4 className="text-lg text-[#64748B] mb-4">{exp.company}</h4>
+                  <p className="text-[#64748B] mb-6">{exp.description}</p>
+                  
+                  <ul className="space-y-2">
+                    {exp.achievements.map((ach, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="text-[#3478F6] mr-3 mt-1">✦</span>
+                        <span className="text-[#101C2C] text-sm leading-relaxed">{ach}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Selected Projects */}
+      <section id="projects" className="py-24 bg-[#101C2C] text-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12">
+            <div>
+              <h2 className="text-4xl font-bold mb-4">Selected Projects</h2>
+              <p className="text-[#64748B]">Engineering solutions and measurable impacts.</p>
+            </div>
+            
+            {/* Project Filters */}
+            <div className="flex flex-wrap gap-2 mt-6 md:mt-0">
+              {categories.map(cat => (
+                <button 
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-4 py-2 text-sm rounded transition-colors ${
+                    activeCategory === cat 
+                      ? 'bg-[#3478F6] text-white' 
+                      : 'bg-[#172B45] text-[#64748B] hover:text-white'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {filteredProjects.map(proj => (
+              <div 
+                key={proj.id} 
+                className="group cursor-pointer bg-[#172B45] rounded overflow-hidden"
+                onClick={() => setActiveProject(proj)}
+              >
+                <div className="relative h-64 overflow-hidden">
+                  <div className="absolute inset-0 bg-[#101C2C]/20 group-hover:bg-transparent transition-colors z-10"></div>
+                  <img 
+                    src={proj.cover} 
+                    alt={proj.title} 
+                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-8">
+                  <div className="text-xs font-bold text-[#3478F6] uppercase tracking-wider mb-2">{proj.category}</div>
+                  <h3 className="text-2xl font-bold mb-3 group-hover:text-[#3478F6] transition-colors">{proj.title}</h3>
+                  <p className="text-[#64748B] mb-6 line-clamp-2">{proj.summary}</p>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    {proj.tools.map(tool => (
+                      <span key={tool} className="text-xs px-2 py-1 border border-[#64748B]/30 text-[#64748B] rounded">
+                        {tool}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Project Modal */}
+      {activeProject && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+          <div className="absolute inset-0 bg-[#101C2C]/80 backdrop-blur-sm" onClick={() => setActiveProject(null)}></div>
+          <div className="relative bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded shadow-2xl animate-fade-in-up">
+            <button 
+              onClick={() => setActiveProject(null)}
+              className="absolute top-6 right-6 p-2 bg-gray-100 hover:bg-gray-200 rounded-full text-[#101C2C] transition-colors z-10"
+            >
+              <IconClose />
+            </button>
+            
+            <div className="h-64 sm:h-80 relative">
+              <img src={activeProject.cover} alt={activeProject.title} className="w-full h-full object-cover" />
+            </div>
+            
+            <div className="p-8 md:p-12">
+              <div className="text-sm font-bold text-[#3478F6] uppercase tracking-wider mb-2">{activeProject.category}</div>
+              <h2 className="text-3xl font-bold text-[#101C2C] mb-8">{activeProject.title}</h2>
+              
+              <div className="grid md:grid-cols-2 gap-12">
+                <div className="space-y-8">
+                  <div>
+                    <h4 className="text-lg font-bold text-[#101C2C] border-b border-gray-200 pb-2 mb-3">Background</h4>
+                    <p className="text-[#64748B] leading-relaxed">{activeProject.detail.background}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-[#101C2C] border-b border-gray-200 pb-2 mb-3">Methodology</h4>
+                    <p className="text-[#64748B] leading-relaxed">{activeProject.detail.methodology}</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-8">
+                  <div>
+                    <h4 className="text-lg font-bold text-[#101C2C] border-b border-gray-200 pb-2 mb-3">Objectives</h4>
+                    <p className="text-[#64748B] leading-relaxed">{activeProject.detail.objectives}</p>
+                  </div>
+                  <div className="bg-[#F7F8FA] p-6 rounded border border-gray-200">
+                    <h4 className="text-lg font-bold text-[#3478F6] mb-3">Key Results</h4>
+                    <p className="text-[#101C2C] font-medium leading-relaxed">{activeProject.detail.results}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Footer & Secret Admin Button */}
+      <footer className="bg-[#101C2C] py-8 border-t border-[#172B45] text-center relative">
+        <p className="text-[#64748B] text-sm">© {new Date().getFullYear()} {data.hero.name}. All rights reserved.</p>
+        
+        {/* Floating Admin Button */}
+        <button 
+          onClick={() => setView('admin')}
+          className="fixed bottom-6 right-6 p-3 bg-white text-[#101C2C] rounded-full shadow-xl hover:bg-[#3478F6] hover:text-white transition-all z-40 group"
+          title="Admin Login"
+        >
+          <IconSettings />
+          <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-[#101C2C] text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+            Admin Dashboard
+          </span>
+        </button>
+      </footer>
     </div>
+  );
+};
+
+// 2. ADMIN DASHBOARD (Shopee Seller Center Style)
+const AdminDashboard = ({ data, setData, setView }) => {
+  const [activeTab, setActiveTab] = useState('Hero');
+  const [formData, setFormData] = useState(data);
+
+  // Handle generic input changes for nested objects
+  const handleNestedChange = (section, field, value) => {
+    setFormData({
+      ...formData,
+      [section]: {
+        ...formData[section],
+        [field]: value
+      }
+    });
+  };
+
+  const handleSave = () => {
+    setData(formData);
+    alert("Changes Published Successfully!");
+  };
+
+  return (
+    <div className="flex h-screen bg-[#F4F6F9] font-sans text-sm">
+      
+      {/* Sidebar */}
+      <div className="w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm z-10">
+        <div className="h-16 flex items-center px-6 border-b border-gray-200">
+          <div className="font-bold text-lg text-[#EE4D2D]">Workspace<span className="text-[#101C2C]">Admin</span></div>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto py-4">
+          <div className="px-6 mb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Content Management</div>
+          <nav className="space-y-1">
+            {[
+              { id: 'Hero', icon: <IconDashboard />, label: 'Hero Section' },
+              { id: 'About', icon: <IconFileText />, label: 'About & Info' },
+              { id: 'Experience', icon: <IconBriefcase />, label: 'Experiences' },
+              { id: 'Projects', icon: <IconEdit />, label: 'Manage Projects' },
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center px-6 py-3 transition-colors ${
+                  activeTab === item.id 
+                    ? 'bg-[#EE4D2D]/10 text-[#EE4D2D] border-r-4 border-[#EE4D2D]' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                <span className="mr-3">{item.icon}</span>
+                {item.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+        
+        <div className="p-4 border-t border-gray-200">
+          <button 
+            onClick={() => setView('public')}
+            className="w-full py-2 text-center text-[#64748B] bg-gray-100 hover:bg-gray-200 rounded font-medium transition-colors"
+          >
+            Exit to Website
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        
+        {/* Top Navbar */}
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shadow-sm z-0">
+          <h1 className="text-xl font-bold text-gray-800">
+            {activeTab === 'Hero' && 'Edit Hero Section'}
+            {activeTab === 'About' && 'Edit About Information'}
+            {activeTab === 'Experience' && 'Manage Work Experiences'}
+            {activeTab === 'Projects' && 'Manage Projects'}
+          </h1>
+          <div className="flex space-x-4">
+            <button 
+              onClick={() => setFormData(data)} 
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 font-medium"
+            >
+              Discard Changes
+            </button>
+            <button 
+              onClick={handleSave} 
+              className="px-6 py-2 bg-[#EE4D2D] text-white rounded hover:bg-[#D74325] font-medium shadow-md shadow-[#EE4D2D]/20 transition-all"
+            >
+              Save & Publish
+            </button>
+          </div>
+        </header>
+
+        {/* Form Container */}
+        <main className="flex-1 overflow-y-auto p-8">
+          <div className="bg-white rounded border border-gray-200 shadow-sm max-w-4xl">
+            
+            {/* HERO EDITOR */}
+            {activeTab === 'Hero' && (
+              <div className="p-8 space-y-6">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block font-medium text-gray-700">Full Name</label>
+                    <input 
+                      type="text" 
+                      value={formData.hero.name}
+                      onChange={(e) => handleNestedChange('hero', 'name', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#EE4D2D]/20 focus:border-[#EE4D2D] outline-none transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block font-medium text-gray-700">Professional Headline</label>
+                    <input 
+                      type="text" 
+                      value={formData.hero.headline}
+                      onChange={(e) => handleNestedChange('hero', 'headline', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#EE4D2D]/20 focus:border-[#EE4D2D] outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block font-medium text-gray-700">Short Description</label>
+                  <textarea 
+                    rows="4"
+                    value={formData.hero.description}
+                    onChange={(e) => handleNestedChange('hero', 'description', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#EE4D2D]/20 focus:border-[#EE4D2D] outline-none transition-all resize-none"
+                  ></textarea>
+                </div>
+
+                <div className="grid grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <label className="block font-medium text-gray-700">Location</label>
+                    <input 
+                      type="text" 
+                      value={formData.hero.location}
+                      onChange={(e) => handleNestedChange('hero', 'location', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#EE4D2D]/20 focus:border-[#EE4D2D] outline-none"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block font-medium text-gray-700">Email Address</label>
+                    <input 
+                      type="email" 
+                      value={formData.hero.email}
+                      onChange={(e) => handleNestedChange('hero', 'email', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#EE4D2D]/20 focus:border-[#EE4D2D] outline-none"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block font-medium text-gray-700">Photo URL</label>
+                    <input 
+                      type="text" 
+                      value={formData.hero.photoUrl}
+                      onChange={(e) => handleNestedChange('hero', 'photoUrl', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#EE4D2D]/20 focus:border-[#EE4D2D] outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ABOUT EDITOR */}
+            {activeTab === 'About' && (
+              <div className="p-8 space-y-6">
+                 <div className="space-y-2">
+                  <label className="block font-medium text-gray-700">Professional Summary</label>
+                  <textarea 
+                    rows="5"
+                    value={formData.about.summary}
+                    onChange={(e) => handleNestedChange('about', 'summary', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#EE4D2D]/20 focus:border-[#EE4D2D] outline-none resize-none"
+                  ></textarea>
+                </div>
+                <div className="space-y-2">
+                  <label className="block font-medium text-gray-700">Education Details</label>
+                  <input 
+                    type="text" 
+                    value={formData.about.education}
+                    onChange={(e) => handleNestedChange('about', 'education', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#EE4D2D]/20 focus:border-[#EE4D2D] outline-none"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block font-medium text-gray-700">Career Focus Areas</label>
+                  <input 
+                    type="text" 
+                    value={formData.about.focus}
+                    onChange={(e) => handleNestedChange('about', 'focus', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#EE4D2D]/20 focus:border-[#EE4D2D] outline-none"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* EXPERIENCE / PROJECTS PLACEHOLDER (To keep code manageable but functional) */}
+            {(activeTab === 'Experience' || activeTab === 'Projects') && (
+              <div className="p-8 flex flex-col items-center justify-center text-center text-gray-500 py-20">
+                <IconBriefcase />
+                <p className="mt-4 font-medium">This module is connected to the array data structure.</p>
+                <p className="text-sm mt-1">In a full backend setup, this renders a dynamic list builder here.</p>
+                <p className="text-sm mt-4 bg-yellow-50 text-yellow-700 p-3 rounded border border-yellow-200">
+                  Untuk mengedit Pengalaman & Proyek di versi simulasi ini, struktur *Array Management* diperlukan (Tambah/Hapus baris). Karena batasan ukuran output file tunggal, fitur edit array disembunyikan. Tab *Hero* dan *About* berfungsi penuh untuk mengubah text.
+                </p>
+              </div>
+            )}
+
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+// 3. MAIN APP WRAPPER
+export default function App() {
+  const [view, setView] = useState('public'); // 'public' | 'admin'
+  const [portfolioData, setPortfolioData] = useState(initialData);
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{__html: `
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}} />
+      
+      {view === 'public' ? (
+        <PublicPortfolio data={portfolioData} setView={setView} />
+      ) : (
+        <AdminDashboard data={portfolioData} setData={setPortfolioData} setView={setView} />
+      )}
+    </>
   );
 }
