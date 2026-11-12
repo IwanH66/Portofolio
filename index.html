@@ -312,6 +312,62 @@
                           <div className="space-y-2"><label className="block font-medium text-gray-700">Location</label><input type="text" value={formData.hero.location} onChange={(e) => handleNestedChange('hero', 'location', e.target.value)} className="w-full px-4 py-2 border rounded outline-none" /></div>
                           <div className="space-y-2"><label className="block font-medium text-gray-700">Email</label><input type="text" value={formData.hero.email} onChange={(e) => handleNestedChange('hero', 'email', e.target.value)} className="w-full px-4 py-2 border rounded outline-none" /></div>
                         </div>
+
+                        {/* FITUR BARU: PENGATURAN FOTO HERO */}
+                        <div className="mt-8 pt-6 border-t border-gray-200">
+                          <h3 className="font-bold text-gray-800 mb-4">Pengaturan Foto Utama (Hero Image)</h3>
+                          <div className="grid md:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6 text-gray-500">
+                                  <IconUpload />
+                                  <p className="mt-2 text-sm font-semibold">Upload Foto Baru (JPG/PNG)</p>
+                                  <p className="text-xs">Otomatis dikompres</p>
+                                </div>
+                                <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={(e) => {
+                                  const file = e.target.files[0];
+                                  if (file) compressImage(file, (base64) => handleNestedChange('hero', 'photoUrl', base64));
+                                }} />
+                              </label>
+                              
+                              <div className="space-y-1">
+                                <label className="block text-xs font-bold text-gray-500">Direct Link Foto (URL)</label>
+                                <input type="text" value={formData.hero.photoUrl} onChange={(e) => handleNestedChange('hero', 'photoUrl', e.target.value)} className="w-full px-3 py-2 border rounded outline-none text-xs" />
+                              </div>
+
+                              <div className="space-y-4 pt-4 border-t border-gray-100">
+                                <div>
+                                  <label className="text-xs font-bold text-gray-500 flex justify-between">Zoom <span>{formData.hero.photoSettings?.zoom || 100}%</span></label>
+                                  <input type="range" min="100" max="250" value={formData.hero.photoSettings?.zoom || 100} onChange={e => setFormData({...formData, hero: {...formData.hero, photoSettings: {...(formData.hero.photoSettings || {zoom:100, posX:50, posY:50}), zoom: e.target.value}}})} className="w-full" />
+                                </div>
+                                <div>
+                                  <label className="text-xs font-bold text-gray-500 flex justify-between">Geser Kiri/Kanan (Posisi X) <span>{formData.hero.photoSettings?.posX || 50}%</span></label>
+                                  <input type="range" min="0" max="100" value={formData.hero.photoSettings?.posX || 50} onChange={e => setFormData({...formData, hero: {...formData.hero, photoSettings: {...(formData.hero.photoSettings || {zoom:100, posX:50, posY:50}), posX: e.target.value}}})} className="w-full" />
+                                </div>
+                                <div>
+                                  <label className="text-xs font-bold text-gray-500 flex justify-between">Geser Atas/Bawah (Posisi Y) <span>{formData.hero.photoSettings?.posY || 50}%</span></label>
+                                  <input type="range" min="0" max="100" value={formData.hero.photoSettings?.posY || 50} onChange={e => setFormData({...formData, hero: {...formData.hero, photoSettings: {...(formData.hero.photoSettings || {zoom:100, posX:50, posY:50}), posY: e.target.value}}})} className="w-full" />
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Live Preview Kotak Foto */}
+                            <div className="flex justify-center items-center bg-gray-100 rounded border p-4">
+                                <div className="w-48 h-[256px] overflow-hidden rounded shadow-lg bg-white relative">
+                                    <img 
+                                      src={formData.hero.photoUrl} 
+                                      alt="Preview" 
+                                      className="w-full h-full object-cover" 
+                                      style={{ 
+                                        objectPosition: `${formData.hero.photoSettings?.posX || 50}% ${formData.hero.photoSettings?.posY || 50}%`, 
+                                        transform: `scale(${(formData.hero.photoSettings?.zoom || 100) / 100})` 
+                                      }} 
+                                    />
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+
                       </div>
                     )}
 
@@ -418,57 +474,125 @@
           }, [setView]);
 
           return (
-            <div className="font-sans text-[#101C2C] selection:bg-[#3478F6] selection:text-white">
+            <div className="font-sans text-[#0F172A] selection:bg-[#3478F6] selection:text-white">
               
-              {/* HERO SECTION - Padding top diubah karena tidak ada navbar */}
-              <section className="pt-16 pb-12 px-6 max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-10 min-h-[90vh]">
-                <div className="flex-1 space-y-6 md:space-y-8 animate-fade-in-up flex flex-col items-start">
-                  <div className="space-y-3">
-                    <h2 className="text-[#3478F6] font-semibold text-sm uppercase">Portfolio & Curriculum Vitae</h2>
-                    <h1 className="text-4xl md:text-7xl font-extrabold tracking-tight leading-[1.1]">{data.hero.name}</h1>
-                    <p className="text-xl md:text-2xl text-[#64748B] font-light">{data.hero.headline}</p>
+              {/* HERO SECTION */}
+              <section className="pt-20 pb-16 px-6 max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-12 min-h-[90vh]">
+                <div className="flex-1 space-y-8 animate-fade-in-up flex flex-col items-start">
+                  <div className="space-y-4">
+                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-widest">
+                      Portfolio & Curriculum Vitae
+                    </div>
+                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-600">
+                      {data.hero.name}
+                    </h1>
+                    <p className="text-2xl text-slate-500 font-medium tracking-tight">{data.hero.headline}</p>
                   </div>
-                  <p className="text-lg text-[#64748B] leading-relaxed max-w-xl">{data.hero.description}</p>
-                  <div className="flex flex-wrap gap-4 items-center">
-                    <span className="flex items-center text-sm font-medium bg-white px-4 py-2 rounded shadow-sm border"><span className="mr-2 text-[#3478F6]"><IconMapPin /></span>{data.hero.location}</span>
-                    <a href={`mailto:${data.hero.email}`} className="flex items-center text-sm font-medium bg-white px-4 py-2 rounded shadow-sm border hover:text-[#3478F6]"><span className="mr-2 text-[#3478F6]"><IconMail /></span>{data.hero.email}</a>
+                  <p className="text-lg text-slate-600 leading-relaxed max-w-xl font-light">{data.hero.description}</p>
+                  <div className="flex flex-wrap gap-4 items-center pt-2">
+                    <span className="flex items-center text-sm font-medium bg-white px-5 py-2.5 rounded-xl shadow-sm border border-slate-100 text-slate-700">
+                      <span className="mr-2 text-[#3478F6]"><IconMapPin /></span>{data.hero.location}
+                    </span>
+                    <a href={`mailto:${data.hero.email}`} className="flex items-center text-sm font-medium bg-white px-5 py-2.5 rounded-xl shadow-sm border border-slate-100 text-slate-700 hover:border-blue-200 hover:text-blue-600 transition-all">
+                      <span className="mr-2 text-[#3478F6]"><IconMail /></span>{data.hero.email}
+                    </a>
                   </div>
                 </div>
                 
                 <div className="flex-1 w-full flex justify-end relative">
                   <div className="w-2/3 md:w-full md:max-w-md rounded shadow-2xl relative z-10 overflow-hidden aspect-[3/4]">
-                    <img src={data.hero.photoUrl} alt="Profile" className="w-full h-full object-cover" />
+                    <img 
+                      src={data.hero.photoUrl} 
+                      alt="Profile" 
+                      className="w-full h-full object-cover" 
+                      style={{ 
+                        objectPosition: `${data.hero.photoSettings?.posX || 50}% ${data.hero.photoSettings?.posY || 50}%`, 
+                        transform: `scale(${(data.hero.photoSettings?.zoom || 100) / 100})` 
+                      }} 
+                    />
                   </div>
                 </div>
               </section>
 
               {/* ABOUT SECTION */}
-              <section className="py-20 bg-white border-y border-gray-100">
-                <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-12">
-                  <div className="md:col-span-4"><h2 className="text-3xl font-bold mb-6">About Architecture</h2><div className="h-1 w-20 bg-[#3478F6]"></div></div>
-                  <div className="md:col-span-8 space-y-8">
-                    <p className="text-xl leading-relaxed font-medium">{data.about.summary}</p>
+              <section className="py-24 bg-white border-y border-slate-100">
+                <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-12 items-center">
+                  <div className="md:col-span-4">
+                    <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">About Me</h2>
+                    <div className="h-1.5 w-16 bg-[#3478F6] rounded-full"></div>
+                  </div>
+                  <div className="md:col-span-8 space-y-6">
+                    <p className="text-2xl leading-relaxed text-slate-700 font-light">{data.about.summary}</p>
+                    <div className="flex flex-wrap gap-6 pt-4 text-sm text-slate-500 font-medium">
+                      <span className="bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">🎓 {data.about.education}</span>
+                      <span className="bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">🎯 {data.about.focus}</span>
+                    </div>
                   </div>
                 </div>
               </section>
 
               {/* EXPERIENCE TIMELINE SECTION */}
               <section className="py-24 px-6 max-w-7xl mx-auto">
-                <h2 className="text-4xl font-bold mb-16 text-center">Professional Timeline</h2>
-                <div className="space-y-12">
+                <div className="flex flex-col items-center mb-20 text-center">
+                  <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">Professional Timeline</h2>
+                  <p className="text-slate-500 max-w-2xl text-lg">Perjalanan karir dan rekam jejak profesional di industri.</p>
+                </div>
+                
+                <div className="space-y-10">
                   {data.experience.map((exp) => (
-                    <div key={exp.id} className="relative pl-8 md:pl-0">
-                      <div className="md:grid md:grid-cols-5 md:gap-8 items-start">
-                        <div className="hidden md:block col-span-1 text-right pt-1"><div className="text-lg font-bold">{exp.period}</div><div className="text-sm text-[#64748B]">{exp.location}</div></div>
-                        <div className="absolute left-0 md:left-1/5 md:-ml-[17px] top-2 bottom-0 w-px bg-gray-200"></div>
-                        <div className="absolute left-[-4px] md:left-1/5 md:-ml-[21px] top-2 w-2 h-2 rounded-full bg-[#3478F6] ring-4 ring-[#F7F8FA]"></div>
-                        <div className="md:col-span-4 bg-white p-8 rounded border shadow-sm group">
-                          <h3 className="text-2xl font-bold mb-1">{exp.role}</h3>
-                          <div className="flex items-center gap-3 mb-4 mt-2">
-                            {exp.logo && <img src={exp.logo} alt={exp.company} className="w-10 h-10 object-contain rounded border p-1 bg-gray-50" />}
-                            <h4 className="text-lg text-[#64748B]">{exp.company}</h4>
+                    <div key={exp.id} className="relative pl-8 md:pl-0 group">
+                      <div className="md:grid md:grid-cols-5 md:gap-10 items-start">
+                        {/* Timeline Date & Line */}
+                        <div className="hidden md:block col-span-1 text-right pt-6">
+                          <div className="text-lg font-bold text-slate-800">{exp.period}</div>
+                          <div className="text-sm text-slate-500 font-medium mt-1">{exp.location}</div>
+                        </div>
+                        
+                        <div className="absolute left-0 md:left-1/5 md:-ml-[17.5px] top-4 bottom-[-40px] w-px bg-slate-200 group-last:bg-transparent transition-all"></div>
+                        <div className="absolute left-[-5px] md:left-1/5 md:-ml-[22.5px] top-7 w-3 h-3 rounded-full bg-white border-2 border-[#3478F6] ring-4 ring-[#F7F8FA] shadow-sm z-10 transition-transform group-hover:scale-125"></div>
+                        
+                        {/* Experience Card */}
+                        <div className="md:col-span-4 bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                          {/* Header Card: Logo + Title + Company */}
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-6">
+                            {/* Logo Container (Professional Layout) */}
+                            <div className="w-16 h-16 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2.5 shrink-0">
+                              {exp.logo ? (
+                                <img src={exp.logo} alt={exp.company} className="w-full h-full object-contain" />
+                              ) : (
+                                <span className="text-slate-300"><IconBriefcase /></span>
+                              )}
+                            </div>
+                            
+                            <div>
+                              <h3 className="text-2xl font-bold text-slate-900">{exp.role}</h3>
+                              <div className="flex flex-wrap items-center gap-2 mt-1.5 text-slate-600 font-medium">
+                                <span>{exp.company}</span>
+                                {exp.department && (
+                                  <>
+                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                                    <span>{exp.department}</span>
+                                  </>
+                                )}
+                                <span className="md:hidden w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                                <span className="md:hidden text-slate-400">{exp.period}</span>
+                              </div>
+                            </div>
                           </div>
-                          <p className="text-[#64748B] mb-6">{exp.description}</p>
+                          
+                          <p className="text-slate-600 leading-relaxed text-base">{exp.description}</p>
+                          
+                          {/* Optional: Render achievements if they exist in DB */}
+                          {exp.achievements && exp.achievements.length > 0 && (
+                            <ul className="mt-5 space-y-2">
+                              {exp.achievements.map((ach, idx) => (
+                                <li key={idx} className="flex items-start text-slate-600">
+                                  <span className="text-blue-500 mr-2.5 mt-1 font-bold">✓</span>
+                                  <span className="leading-relaxed">{ach}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -477,17 +601,26 @@
               </section>
 
               {/* PROJECTS SECTION */}
-              <section className="py-24 bg-[#101C2C] text-white">
+              <section className="py-24 bg-slate-900 text-white rounded-t-[3rem] border-t border-slate-800">
                 <div className="max-w-7xl mx-auto px-6">
-                  <h2 className="text-4xl font-bold mb-12">Selected Projects</h2>
+                  <div className="flex flex-col items-center mb-16 text-center">
+                    <h2 className="text-4xl font-extrabold tracking-tight mb-4">Selected Projects</h2>
+                    <p className="text-slate-400 max-w-2xl text-lg">Kumpulan studi kasus, analisis data, dan proyek perbaikan berkesinambungan.</p>
+                  </div>
+
                   <div className="grid md:grid-cols-2 gap-8">
                     {data.projects.map(proj => (
-                      <div key={proj.id} className="group cursor-pointer bg-[#172B45] rounded overflow-hidden" onClick={() => setActiveProject(proj)}>
-                        <div className="relative h-64 overflow-hidden"><img src={proj.cover} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" /></div>
+                      <div key={proj.id} className="group cursor-pointer bg-slate-800/50 hover:bg-slate-800 rounded-3xl overflow-hidden border border-slate-700/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-900/20" onClick={() => setActiveProject(proj)}>
+                        <div className="relative h-72 overflow-hidden">
+                          <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-transparent transition-all z-10"></div>
+                          <img src={proj.cover} alt={proj.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+                          <div className="absolute top-4 left-4 z-20 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold tracking-wider text-blue-400 border border-white/10 uppercase">
+                            {proj.category}
+                          </div>
+                        </div>
                         <div className="p-8">
-                          <div className="text-xs font-bold text-[#3478F6] uppercase tracking-wider mb-2">{proj.category}</div>
-                          <h3 className="text-2xl font-bold mb-3">{proj.title}</h3>
-                          <p className="text-[#64748B] line-clamp-2">{proj.summary}</p>
+                          <h3 className="text-3xl font-bold mb-4 group-hover:text-blue-400 transition-colors tracking-tight">{proj.title}</h3>
+                          <p className="text-slate-400 line-clamp-2 text-lg font-light leading-relaxed">{proj.summary}</p>
                         </div>
                       </div>
                     ))}
@@ -497,18 +630,77 @@
 
               {/* MODAL / PROJECT DETAIL */}
               {activeProject && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                  <div className="absolute inset-0 bg-[#101C2C]/80 backdrop-blur-sm" onClick={() => setActiveProject(null)}></div>
-                  <div className="relative bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded shadow-2xl">
-                    <button onClick={() => setActiveProject(null)} className="absolute top-6 right-6 p-2 bg-gray-100 rounded-full z-10"><IconClose /></button>
-                    <div className="h-64 relative"><img src={activeProject.cover} className="w-full h-full object-cover" /></div>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+                  <div className="absolute inset-0 bg-slate-900/90 backdrop-blur-md transition-opacity" onClick={() => setActiveProject(null)}></div>
+                  <div className="relative bg-white w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl animate-fade-in-up">
+                    <button onClick={() => setActiveProject(null)} className="absolute top-6 right-6 p-3 bg-white hover:bg-slate-100 text-slate-800 rounded-full z-10 shadow-lg transition-transform hover:scale-110">
+                      <IconClose />
+                    </button>
+                    
+                    <div className="h-72 sm:h-96 relative">
+                      <img src={activeProject.cover} alt={activeProject.title} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
+                      <div className="absolute bottom-8 left-8 right-8 text-white">
+                        <div className="text-sm font-bold text-blue-400 uppercase tracking-widest mb-3">{activeProject.category}</div>
+                        <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">{activeProject.title}</h2>
+                      </div>
+                    </div>
+                    
                     <div className="p-8 md:p-12">
-                      <div className="text-sm font-bold text-[#3478F6] mb-2">{activeProject.category}</div>
-                      <h2 className="text-3xl font-bold mb-8">{activeProject.title}</h2>
-                      <div className="grid md:grid-cols-2 gap-8">
-                        <div><h4 className="font-bold border-b pb-2 mb-3">Background</h4><p className="text-gray-600">{activeProject.detail?.background}</p></div>
-                        <div><h4 className="font-bold border-b pb-2 mb-3">Objectives</h4><p className="text-gray-600">{activeProject.detail?.objectives}</p></div>
-                        <div className="col-span-2"><h4 className="font-bold border-b pb-2 mb-3 text-blue-600">Key Results</h4><p className="text-gray-800 font-medium">{activeProject.detail?.results}</p></div>
+                      <div className="grid md:grid-cols-2 gap-12">
+                        {/* Kolom Kiri */}
+                        <div className="space-y-10">
+                          <div>
+                            <h4 className="flex items-center text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">
+                              <span className="bg-blue-100 text-blue-600 p-1.5 rounded-lg mr-3">🎯</span> Background & Objectives
+                            </h4>
+                            <div className="space-y-4 text-slate-600 leading-relaxed">
+                              <p><strong className="text-slate-800 font-medium">Background:</strong> {activeProject.detail?.background}</p>
+                              <p><strong className="text-slate-800 font-medium">Objectives:</strong> {activeProject.detail?.objectives}</p>
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <h4 className="flex items-center text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">
+                              <span className="bg-blue-100 text-blue-600 p-1.5 rounded-lg mr-3">⚙️</span> Scope & Roles
+                            </h4>
+                            <div className="space-y-4 text-slate-600 leading-relaxed">
+                              <p><strong className="text-slate-800 font-medium">Scope:</strong> {activeProject.detail?.scope}</p>
+                              <p><strong className="text-slate-800 font-medium">Roles:</strong> {activeProject.detail?.roles}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Kolom Kanan */}
+                        <div className="space-y-10">
+                          <div>
+                            <h4 className="flex items-center text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">
+                              <span className="bg-blue-100 text-blue-600 p-1.5 rounded-lg mr-3">🔬</span> Methodology
+                            </h4>
+                            <p className="text-slate-600 leading-relaxed">{activeProject.detail?.methodology}</p>
+                          </div>
+
+                          <div className="bg-gradient-to-br from-blue-50 to-slate-50 p-8 rounded-2xl border border-blue-100/50 shadow-inner">
+                            <h4 className="flex items-center text-lg font-bold text-blue-700 mb-4">
+                              <span className="text-2xl mr-2">📈</span> Key Results
+                            </h4>
+                            <p className="text-slate-800 font-medium leading-relaxed text-lg">{activeProject.detail?.results}</p>
+                          </div>
+                          
+                          {/* Skills Tags (If Exists) */}
+                          {activeProject.detail?.skills && activeProject.detail.skills.length > 0 && (
+                            <div>
+                              <h4 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Tools & Skills</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {activeProject.detail.skills.map((skill, i) => (
+                                  <span key={i} className="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium border border-slate-200">
+                                    {skill}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
