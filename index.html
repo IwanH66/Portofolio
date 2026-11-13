@@ -43,6 +43,7 @@
         const IconBriefcase = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>;
         const IconFileText = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>;
         const IconUpload = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>;
+        const IconAcademic = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>;
 
         // Image Compressor Logic (Client-Side)
         const compressImage = (file, callback) => {
@@ -89,6 +90,12 @@
             education: "B.Sc. in Industrial Engineering - ITB",
             focus: "Production Planning, QC, Process Automation"
           },
+          educations: [
+            { id: 1, name: "Universitas Trunojoyo Madura", role: "Sarjana (S1) Teknik Industri", period: "Aug 2022 - May 2026", info: "IPK: 3.58 / 4.00", logo: "" }
+          ],
+          organizations: [
+            { id: 1, name: "Ikatan Mahasiswa Ronggolawe", role: "Divisi Infokom", period: "Sep 2023 - Oct 2025", info: "", logo: "" }
+          ],
           masterSkills: ["Lean Six Sigma", "AutoCAD", "Minitab", "Power Query", "Data Analytics"],
           experience: [
             {
@@ -127,6 +134,47 @@
         // ==========================================
         // SEGMENT 3: ADMIN SUB-COMPONENTS
         // ==========================================
+        const EduOrgEditor = ({ item, title, onSave, onCancel }) => {
+            const [local, setLocal] = useState(item || { id: Date.now(), name: '', role: '', period: '', info: '', logo: '' });
+            
+            const handleImg = (e) => {
+                const file = e.target.files[0];
+                if (file) compressImage(file, (base64) => setLocal({...local, logo: base64}));
+            };
+
+            return (
+                <div className="space-y-6">
+                    <h3 className="text-lg font-bold text-gray-800 border-b pb-2">{item ? `Edit ${title}` : `Add New ${title}`}</h3>
+                    
+                    <div className="flex items-center gap-4 p-4 border rounded bg-gray-50">
+                        <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-gray-300 rounded cursor-pointer bg-white hover:bg-gray-50 overflow-hidden">
+                            {local.logo ? (
+                                <img src={local.logo} className="w-full h-full object-contain p-1" alt="Logo" />
+                            ) : (
+                                <div className="text-center text-gray-400"><IconUpload /><span className="text-[10px] block mt-1">Logo</span></div>
+                            )}
+                            <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={handleImg} />
+                        </label>
+                        <div className="flex-1 space-y-2">
+                            <input type="text" placeholder="Atau paste link URL logo..." value={local.logo} onChange={e => setLocal({...local, logo: e.target.value})} className="w-full border p-2 rounded text-xs" />
+                            <p className="text-xs text-gray-500">Upload logo format JPG/PNG, otomatis dikompres.</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <input type="text" placeholder="Nama Institusi / Organisasi" value={local.name} onChange={e => setLocal({...local, name: e.target.value})} className="border p-2 rounded" />
+                        <input type="text" placeholder="Gelar / Jabatan" value={local.role} onChange={e => setLocal({...local, role: e.target.value})} className="border p-2 rounded" />
+                        <input type="text" placeholder="Periode (e.g. Aug 2022 - May 2026)" value={local.period} onChange={e => setLocal({...local, period: e.target.value})} className="border p-2 rounded" />
+                        <input type="text" placeholder="Info Tambahan (Opsional, e.g. IPK: 3.58)" value={local.info} onChange={e => setLocal({...local, info: e.target.value})} className="border p-2 rounded" />
+                    </div>
+                    <div className="flex justify-end gap-3 pt-4 border-t">
+                        <button onClick={onCancel} className="px-4 py-2 border rounded">Cancel</button>
+                        <button onClick={() => onSave(local)} className="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+                    </div>
+                </div>
+            );
+        };
+
         const ExperienceEditor = ({ exp, onSave, onCancel }) => {
             const [local, setLocal] = useState(exp || { id: Date.now(), company: '', logo: '', role: '', period: '', location: '', department: '', description: '', achievements: [] });
             
@@ -275,6 +323,7 @@
                     {[
                       { id: 'Hero', icon: <IconDashboard />, label: 'Hero Section' },
                       { id: 'About', icon: <IconFileText />, label: 'About & Info' },
+                      { id: 'EduOrg', icon: <IconAcademic />, label: 'Edu & Org' },
                       { id: 'Experience', icon: <IconBriefcase />, label: 'Experiences' },
                       { id: 'Projects', icon: <IconEdit />, label: 'Manage Projects' },
                     ].map((item) => (
@@ -384,6 +433,77 @@
                         <div className="space-y-2">
                           <label className="block font-medium text-gray-700">Career Focus Areas</label>
                           <input type="text" value={formData.about.focus} onChange={(e) => handleNestedChange('about', 'focus', e.target.value)} className="w-full px-4 py-2 border rounded outline-none focus:border-[#EE4D2D]" />
+                        </div>
+                      </div>
+                    )}
+
+                    {activeTab === 'EduOrg' && (
+                      <div className="p-8 space-y-12">
+                        
+                        {/* Educations */}
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Riwayat Pendidikan</h3>
+                          {editingItem?.type === 'edu' ? (
+                             <EduOrgEditor 
+                                title="Education"
+                                item={editingItem.id === 'new' ? null : formData.educations?.find(e => e.id === editingItem.id)}
+                                onCancel={() => setEditingItem(null)}
+                                onSave={(newEdu) => {
+                                  const newArray = editingItem.id === 'new' ? [...(formData.educations||[]), newEdu] : formData.educations.map(e => e.id === newEdu.id ? newEdu : e);
+                                  setFormData({...formData, educations: newArray});
+                                  setEditingItem(null);
+                                }}
+                             />
+                          ) : (
+                            <div className="space-y-4">
+                              <button onClick={() => setEditingItem({type: 'edu', id: 'new'})} className="mb-2 px-4 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded font-medium">+ Add New Education</button>
+                              {(formData.educations || []).map((edu) => (
+                                <div key={edu.id} className="flex justify-between items-center p-4 border rounded bg-gray-50">
+                                  <div className="flex items-center gap-4">
+                                    {edu.logo && <img src={edu.logo} className="w-10 h-10 rounded object-contain border p-1 bg-white" alt="" />}
+                                    <div><div className="font-bold">{edu.name}</div><div className="text-sm text-gray-500">{edu.role} • {edu.period}</div></div>
+                                  </div>
+                                  <div className="space-x-2">
+                                    <button onClick={() => setEditingItem({type: 'edu', id: edu.id})} className="px-3 py-1 bg-white border rounded">Edit</button>
+                                    <button onClick={() => setFormData({...formData, educations: formData.educations.filter(e => e.id !== edu.id)})} className="px-3 py-1 bg-red-50 text-red-500 border rounded">Delete</button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Organizations */}
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Pengalaman Organisasi</h3>
+                          {editingItem?.type === 'org' ? (
+                             <EduOrgEditor 
+                                title="Organization"
+                                item={editingItem.id === 'new' ? null : formData.organizations?.find(e => e.id === editingItem.id)}
+                                onCancel={() => setEditingItem(null)}
+                                onSave={(newOrg) => {
+                                  const newArray = editingItem.id === 'new' ? [...(formData.organizations||[]), newOrg] : formData.organizations.map(e => e.id === newOrg.id ? newOrg : e);
+                                  setFormData({...formData, organizations: newArray});
+                                  setEditingItem(null);
+                                }}
+                             />
+                          ) : (
+                            <div className="space-y-4">
+                              <button onClick={() => setEditingItem({type: 'org', id: 'new'})} className="mb-2 px-4 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded font-medium">+ Add New Organization</button>
+                              {(formData.organizations || []).map((org) => (
+                                <div key={org.id} className="flex justify-between items-center p-4 border rounded bg-gray-50">
+                                  <div className="flex items-center gap-4">
+                                    {org.logo && <img src={org.logo} className="w-10 h-10 rounded object-contain border p-1 bg-white" alt="" />}
+                                    <div><div className="font-bold">{org.name}</div><div className="text-sm text-gray-500">{org.role} • {org.period}</div></div>
+                                  </div>
+                                  <div className="space-x-2">
+                                    <button onClick={() => setEditingItem({type: 'org', id: org.id})} className="px-3 py-1 bg-white border rounded">Edit</button>
+                                    <button onClick={() => setFormData({...formData, organizations: formData.organizations.filter(e => e.id !== org.id)})} className="px-3 py-1 bg-red-50 text-red-500 border rounded">Delete</button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
@@ -539,28 +659,53 @@
                   <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-16 mx-auto"></div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                      <div className="flex gap-6 items-start">
-                        <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 font-bold">UTM</div>
-                        <div>
-                          <h4 className="text-xl font-bold text-slate-800">Universitas Trunojoyo Madura</h4>
-                          <p className="text-blue-600 font-medium mt-1">Sarjana (S1) Teknik Industri</p>
-                          <p className="text-slate-500 text-sm mt-2 font-medium">Aug 2022 - May 2026</p>
-                          <p className="text-slate-600 mt-3 bg-slate-50 inline-block px-3 py-1 rounded-lg text-sm font-medium border border-slate-100">IPK: 3.58 / 4.00</p>
-                        </div>
-                      </div>
-                    </div>
                     
-                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                      <div className="flex gap-6 items-start">
-                        <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 font-bold">IKM</div>
-                        <div>
-                          <h4 className="text-xl font-bold text-slate-800">Ikatan Mahasiswa Ronggolawe</h4>
-                          <p className="text-emerald-600 font-medium mt-1">Divisi Infokom</p>
-                          <p className="text-slate-500 text-sm mt-2 font-medium">Sep 2023 - Oct 2025</p>
+                    {/* Render Educations */}
+                    {(data?.educations || []).map((edu) => (
+                      <div key={edu.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                        <div className="flex gap-6 items-start">
+                          {edu.logo ? (
+                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 border border-slate-100 p-1 overflow-hidden">
+                              <img src={edu.logo} alt={edu.name} className="w-full h-full object-contain" />
+                            </div>
+                          ) : (
+                            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 font-bold">
+                              {edu.name.charAt(0)}
+                            </div>
+                          )}
+                          <div>
+                            <h4 className="text-xl font-bold text-slate-800">{edu.name}</h4>
+                            <p className="text-blue-600 font-medium mt-1">{edu.role}</p>
+                            <p className="text-slate-500 text-sm mt-2 font-medium">{edu.period}</p>
+                            {edu.info && <p className="text-slate-600 mt-3 bg-slate-50 inline-block px-3 py-1 rounded-lg text-sm font-medium border border-slate-100">{edu.info}</p>}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    ))}
+                    
+                    {/* Render Organizations */}
+                    {(data?.organizations || []).map((org) => (
+                      <div key={org.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                        <div className="flex gap-6 items-start">
+                          {org.logo ? (
+                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 border border-slate-100 p-1 overflow-hidden">
+                              <img src={org.logo} alt={org.name} className="w-full h-full object-contain" />
+                            </div>
+                          ) : (
+                            <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 font-bold">
+                              {org.name.charAt(0)}
+                            </div>
+                          )}
+                          <div>
+                            <h4 className="text-xl font-bold text-slate-800">{org.name}</h4>
+                            <p className="text-emerald-600 font-medium mt-1">{org.role}</p>
+                            <p className="text-slate-500 text-sm mt-2 font-medium">{org.period}</p>
+                            {org.info && <p className="text-slate-600 mt-3 bg-slate-50 inline-block px-3 py-1 rounded-lg text-sm font-medium border border-slate-100">{org.info}</p>}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
                   </div>
                 </div>
               </section>
