@@ -461,264 +461,345 @@
         // ==========================================
         // SEGMENT 5: PUBLIC PORTFOLIO (NO NAV, SEAMLESS)
         // ==========================================
-       
-// --- 5. PUBLIC PORTFOLIO VIEW (UI FRONTEND) ---
-const Portfolio = ({ data, onOpenProject }) => {
-  // Filter proyek independen (tidak terikat pengalaman) jika ada
-  const independentProjects = data.projects.filter(p => !p.experienceId);
+        const PublicPortfolio = ({ data, setView }) => {
+          const [activeProject, setActiveProject] = useState(null);
 
-  return (
-    <div className="font-sans text-slate-800 bg-slate-50 min-h-screen pb-20">
-      
-      {/* 1. HERO SECTION */}
-      <section className="bg-slate-900 text-white pt-32 pb-24 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-400 via-transparent to-transparent"></div>
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16 relative z-10">
-          <div className="flex-1 text-center md:text-left">
-            <h2 className="text-blue-400 font-semibold tracking-widest uppercase mb-4 text-sm bg-blue-900/30 inline-block px-4 py-1.5 rounded-full border border-blue-800/50">
-              Fresh Graduate of Industrial Engineering
-            </h2>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">
-              {data.hero.name || "Kurniawan H."}
-            </h1>
-            <p className="text-2xl text-slate-300 font-light mb-10 max-w-2xl leading-relaxed">
-              {data.hero.headline || "Industrial & Manufacturing Engineer"}
-            </p>
-            <div className="flex flex-wrap justify-center md:justify-start gap-4">
-              <a href="mailto:Kurniawanhidayatullahll@gmail.com" className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3.5 rounded-full font-medium transition-all shadow-lg shadow-blue-900/20 flex items-center gap-2">
-                <i className="fas fa-envelope"></i> Contact Me
-              </a>
-              <div className="px-8 py-3.5 rounded-full font-medium border border-slate-700 text-slate-300 flex items-center gap-2">
-                <i className="fas fa-map-marker-alt"></i> Tuban, Jawa Timur
-              </div>
-            </div>
-          </div>
-          {data.hero.image && (
-            <div className="w-64 h-80 md:w-80 md:h-[26rem] flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl border-4 border-slate-800 relative group">
-              <img 
-                src={data.hero.image} 
-                alt="Profile" 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                style={{ 
-                  transform: `scale(${data.hero.imgZoom || 1}) translate(${data.hero.imgX || 0}%, ${data.hero.imgY || 0}%)` 
-                }}
-              />
-            </div>
-          )}
-        </div>
-      </section>
+          // P + L shortcut to open Admin
+          useEffect(() => {
+            const keys = {};
+            const down = e => { keys[e.key.toLowerCase()] = true; if(keys['p'] && keys['l']) setView('admin'); };
+            const up = e => { keys[e.key.toLowerCase()] = false; };
+            window.addEventListener('keydown', down); window.addEventListener('keyup', up);
+            return () => { window.removeEventListener('keydown', down); window.removeEventListener('keyup', up); };
+          }, [setView]);
 
-      {/* 2. ABOUT & SUMMARY */}
-      <section className="py-24 px-6 bg-white border-b border-slate-100">
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-16 items-start">
-          <div className="lg:w-1/3">
-            <h3 className="text-3xl font-bold mb-4 text-slate-800">About Me</h3>
-            <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-8"></div>
-          </div>
-          <div className="lg:w-2/3">
-            <p className="text-lg text-slate-600 leading-relaxed font-light whitespace-pre-wrap">
-              {data.about.summary || "Lulusan S1 Teknik Industri dengan fokus pada process improvement, preventive maintenance, dan Lean Manufacturing..."}
-            </p>
-          </div>
-        </div>
-      </section>
+          // Filter proyek independen (yang belum diikat ke experience tertentu)
+          const independentProjects = data?.projects?.filter(p => !p.experienceId) || [];
 
-      {/* 3. EDUCATION & ORGANIZATION (Static Mockup based on PDF structure, ready for dynamic data) */}
-      <section className="py-24 px-6 bg-slate-50 border-b border-slate-100">
-        <div className="max-w-6xl mx-auto">
-          <h3 className="text-3xl font-bold mb-4 text-slate-800 text-center">Riwayat Pendidikan & Organisasi</h3>
-          <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-16 mx-auto"></div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* Edu Card 1 */}
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-              <div className="flex gap-6 items-start">
-                <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
-                  <i className="fas fa-graduation-cap"></i>
-                </div>
-                <div>
-                  <h4 className="text-xl font-bold text-slate-800">Universitas Trunojoyo Madura</h4>
-                  <p className="text-blue-600 font-medium mt-1">Sarjana (S1) Teknik Industri</p>
-                  <p className="text-slate-500 text-sm mt-2"><i className="far fa-calendar-alt mr-2"></i> Aug 2022 - May 2026</p>
-                  <p className="text-slate-600 mt-3 bg-slate-50 inline-block px-3 py-1 rounded-lg text-sm font-medium">IPK: 3.58 / 4.00</p>
-                </div>
-              </div>
-            </div>
-            
-            {/* Org Card */}
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-              <div className="flex gap-6 items-start">
-                <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
-                  <i className="fas fa-users"></i>
-                </div>
-                <div>
-                  <h4 className="text-xl font-bold text-slate-800">Ikatan Mahasiswa Ronggolawe</h4>
-                  <p className="text-emerald-600 font-medium mt-1">Divisi Infokom</p>
-                  <p className="text-slate-500 text-sm mt-2"><i className="far fa-calendar-alt mr-2"></i> Sep 2023 - Oct 2025</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. EXPERIENCES & INTEGRATED PROJECTS */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h3 className="text-3xl font-bold mb-4 text-slate-800">Pengalaman & Proyek</h3>
-          <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-16"></div>
-
-          <div className="space-y-20">
-            {data.experiences.map((exp) => {
-              const relatedProjects = data.projects.filter(p => p.experienceId === exp.id);
+          return (
+            <div className="font-sans text-slate-800 bg-slate-50 min-h-screen pb-20 selection:bg-blue-500 selection:text-white">
               
-              return (
-                <div key={exp.id} className="relative pl-0 md:pl-12">
-                  {/* Decorative Timeline Line (Desktop only) */}
-                  <div className="hidden md:block absolute left-0 top-0 bottom-0 w-px bg-slate-200"></div>
-                  <div className="hidden md:block absolute left-[-5px] top-10 w-3 h-3 rounded-full bg-blue-600 border-4 border-blue-100"></div>
-
-                  {/* Experience Header */}
-                  <div className="flex flex-col md:flex-row gap-8 items-start mb-10">
-                    {exp.companyLogo ? (
-                      <div className="w-20 h-20 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center overflow-hidden flex-shrink-0">
-                        <img src={exp.companyLogo} alt={exp.company} className="w-full h-full object-contain p-2" />
+              {/* 1. HERO SECTION */}
+              <section className="bg-slate-900 text-white pt-32 pb-24 px-6 relative overflow-hidden">
+                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-400 via-transparent to-transparent"></div>
+                <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16 relative z-10">
+                  <div className="flex-1 text-center md:text-left">
+                    <h2 className="text-blue-400 font-semibold tracking-widest uppercase mb-4 text-sm bg-blue-900/30 inline-block px-4 py-1.5 rounded-full border border-blue-800/50">
+                      Fresh Graduate of Industrial Engineering
+                    </h2>
+                    <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">
+                      {data?.hero?.name || "Kurniawan H."}
+                    </h1>
+                    <p className="text-2xl text-slate-300 font-light mb-10 max-w-2xl leading-relaxed">
+                      {data?.hero?.headline || "Industrial & Manufacturing Engineer"}
+                    </p>
+                    <div className="flex flex-wrap justify-center md:justify-start gap-4">
+                      <a href={`mailto:${data?.hero?.email || ''}`} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3.5 rounded-full font-medium transition-all shadow-lg shadow-blue-900/20 flex items-center gap-2">
+                        <IconMail /> Contact Me
+                      </a>
+                      <div className="px-8 py-3.5 rounded-full font-medium border border-slate-700 text-slate-300 flex items-center gap-2 bg-slate-800/50">
+                        <IconMapPin /> {data?.hero?.location || "Tuban, Jawa Timur"}
                       </div>
-                    ) : (
-                      <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-slate-50 text-blue-600 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-3xl font-bold flex-shrink-0">
-                        {exp.company.charAt(0)}
-                      </div>
-                    )}
-                    
-                    <div className="flex-1">
-                      <h4 className="text-2xl font-bold text-slate-800">{exp.position}</h4>
-                      <h5 className="text-lg text-blue-600 font-medium mt-1">{exp.company}</h5>
-                      <div className="flex flex-wrap gap-4 mt-3 text-sm font-medium text-slate-500">
-                        <span className="bg-slate-100 px-3 py-1 rounded-md"><i className="far fa-calendar-alt mr-2"></i>{exp.period}</span>
-                        <span className="bg-slate-100 px-3 py-1 rounded-md"><i className="fas fa-map-marker-alt mr-2"></i>{exp.location}</span>
-                        {exp.type && <span className="bg-slate-100 px-3 py-1 rounded-md">{exp.type}</span>}
-                      </div>
-                      <p className="mt-6 text-slate-600 leading-relaxed font-light whitespace-pre-wrap">{exp.overview}</p>
                     </div>
                   </div>
+                  {data?.hero?.photoUrl && (
+                    <div className="w-64 h-80 md:w-80 md:h-[26rem] flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl border-4 border-slate-800 relative group">
+                      <img 
+                        src={data.hero.photoUrl} 
+                        alt="Profile" 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        style={{ 
+                          transform: `scale(${(data.hero.photoSettings?.zoom || 100)/100}) translate(${data.hero.photoSettings?.posX ? data.hero.photoSettings.posX - 50 : 0}%, ${data.hero.photoSettings?.posY ? data.hero.photoSettings.posY - 50 : 0}%)` 
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </section>
 
-                  {/* Related Projects Grid */}
-                  {relatedProjects.length > 0 && (
-                    <div className="mt-10 md:ml-28">
-                      <h6 className="text-sm font-bold tracking-wider text-slate-400 uppercase mb-6 flex items-center gap-4">
-                        <span>Related Projects</span>
-                        <div className="h-px bg-slate-200 flex-1"></div>
-                      </h6>
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {relatedProjects.map(proj => (
-                          <div 
-                            key={proj.id} 
-                            onClick={() => onOpenProject(proj)}
-                            className="group bg-white rounded-3xl p-1 border border-slate-100 shadow-sm hover:shadow-xl hover:border-blue-100 transition-all cursor-pointer overflow-hidden"
-                          >
-                            {proj.coverImage && (
-                              <div className="h-56 w-full rounded-2xl overflow-hidden mb-1 relative">
-                                <div className="absolute inset-0 bg-blue-900/10 group-hover:bg-transparent transition-colors z-10"></div>
-                                <img src={proj.coverImage} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              {/* 2. ABOUT & SUMMARY */}
+              <section className="py-24 px-6 bg-white border-b border-slate-100">
+                <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+                  <div className="lg:w-1/3">
+                    <h3 className="text-3xl font-bold mb-4 text-slate-800">About Me</h3>
+                    <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-8"></div>
+                  </div>
+                  <div className="lg:w-2/3">
+                    <p className="text-lg text-slate-600 leading-relaxed font-light whitespace-pre-wrap">
+                      {data?.about?.summary || "Lulusan S1 Teknik Industri dengan fokus pada process improvement..."}
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              {/* 3. EDUCATION & ORGANIZATION (Static Mockup ready for data) */}
+              <section className="py-24 px-6 bg-slate-50 border-b border-slate-100">
+                <div className="max-w-6xl mx-auto">
+                  <h3 className="text-3xl font-bold mb-4 text-slate-800 text-center">Riwayat Pendidikan & Organisasi</h3>
+                  <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-16 mx-auto"></div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                      <div className="flex gap-6 items-start">
+                        <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 font-bold">UTM</div>
+                        <div>
+                          <h4 className="text-xl font-bold text-slate-800">Universitas Trunojoyo Madura</h4>
+                          <p className="text-blue-600 font-medium mt-1">Sarjana (S1) Teknik Industri</p>
+                          <p className="text-slate-500 text-sm mt-2 font-medium">Aug 2022 - May 2026</p>
+                          <p className="text-slate-600 mt-3 bg-slate-50 inline-block px-3 py-1 rounded-lg text-sm font-medium border border-slate-100">IPK: 3.58 / 4.00</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                      <div className="flex gap-6 items-start">
+                        <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 font-bold">IKM</div>
+                        <div>
+                          <h4 className="text-xl font-bold text-slate-800">Ikatan Mahasiswa Ronggolawe</h4>
+                          <p className="text-emerald-600 font-medium mt-1">Divisi Infokom</p>
+                          <p className="text-slate-500 text-sm mt-2 font-medium">Sep 2023 - Oct 2025</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* 4. EXPERIENCES & INTEGRATED PROJECTS */}
+              <section className="py-24 px-6 bg-white">
+                <div className="max-w-6xl mx-auto">
+                  <h3 className="text-3xl font-bold mb-4 text-slate-800">Pengalaman Profesional</h3>
+                  <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-16"></div>
+
+                  <div className="space-y-20">
+                    {data?.experience?.map((exp) => {
+                      const relatedProjects = data?.projects?.filter(p => p.experienceId === exp.id) || [];
+                      
+                      return (
+                        <div key={exp.id} className="relative pl-0 md:pl-12">
+                          <div className="hidden md:block absolute left-0 top-0 bottom-0 w-px bg-slate-200"></div>
+                          <div className="hidden md:block absolute left-[-5px] top-10 w-3 h-3 rounded-full bg-blue-600 border-4 border-blue-100"></div>
+
+                          {/* Experience Header */}
+                          <div className="flex flex-col md:flex-row gap-8 items-start mb-10">
+                            {exp.logo ? (
+                              <div className="w-20 h-20 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center overflow-hidden flex-shrink-0 p-2">
+                                <img src={exp.logo} alt={exp.company} className="w-full h-full object-contain" />
+                              </div>
+                            ) : (
+                              <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-slate-50 text-blue-600 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-3xl font-bold flex-shrink-0">
+                                {exp.company?.charAt(0) || 'C'}
                               </div>
                             )}
-                            <div className="p-6">
-                              <span className="text-xs font-bold text-blue-600 tracking-wider uppercase mb-2 block">{proj.category || 'Project'}</span>
-                              <h5 className="text-xl font-bold text-slate-800 mb-3 group-hover:text-blue-600 transition-colors">{proj.title}</h5>
-                              <p className="text-slate-500 text-sm line-clamp-3 leading-relaxed">{proj.shortDescription}</p>
-                              
-                              <div className="mt-6 flex items-center text-blue-600 text-sm font-semibold group-hover:translate-x-2 transition-transform">
-                                View Details <i className="fas fa-arrow-right ml-2"></i>
+                            
+                            <div className="flex-1">
+                              <h4 className="text-2xl font-bold text-slate-800">{exp.role}</h4>
+                              <h5 className="text-lg text-blue-600 font-medium mt-1">{exp.company}</h5>
+                              <div className="flex flex-wrap gap-3 mt-4 text-sm font-medium text-slate-500">
+                                <span className="bg-slate-100 px-3 py-1 rounded-md">{exp.period}</span>
+                                <span className="bg-slate-100 px-3 py-1 rounded-md">{exp.location}</span>
+                                {exp.department && <span className="bg-slate-100 px-3 py-1 rounded-md">{exp.department}</span>}
                               </div>
+                              <p className="mt-6 text-slate-600 leading-relaxed font-light whitespace-pre-wrap">{exp.description}</p>
                             </div>
                           </div>
+
+                          {/* Related Projects Grid */}
+                          {relatedProjects.length > 0 && (
+                            <div className="mt-10 md:ml-28">
+                              <h6 className="text-xs font-bold tracking-widest text-slate-400 uppercase mb-6 flex items-center gap-4">
+                                <span>Related Projects</span>
+                                <div className="h-px bg-slate-200 flex-1"></div>
+                              </h6>
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {relatedProjects.map(proj => (
+                                  <div 
+                                    key={proj.id} 
+                                    onClick={() => setActiveProject(proj)}
+                                    className="group bg-white rounded-2xl p-1 border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all cursor-pointer overflow-hidden"
+                                  >
+                                    {proj.cover && (
+                                      <div className="h-48 w-full rounded-xl overflow-hidden mb-1 relative bg-slate-100">
+                                        <div className="absolute inset-0 bg-blue-900/10 group-hover:bg-transparent transition-colors z-10"></div>
+                                        <img src={proj.cover} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                      </div>
+                                    )}
+                                    <div className="p-6">
+                                      <span className="text-[10px] font-bold text-blue-600 tracking-widest uppercase mb-2 block">{proj.category || 'Project'}</span>
+                                      <h5 className="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors line-clamp-1">{proj.title}</h5>
+                                      <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed">{proj.summary}</p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Independent Projects */}
+                  {independentProjects.length > 0 && (
+                    <div className="mt-24">
+                      <h3 className="text-2xl font-bold mb-8 text-slate-800 flex items-center gap-4">
+                        <span>Proyek & Portofolio</span>
+                        <div className="h-px bg-slate-200 flex-1"></div>
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {independentProjects.map(proj => (
+                           <div 
+                            key={proj.id} 
+                            onClick={() => setActiveProject(proj)}
+                            className="group bg-white rounded-3xl p-1 border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all cursor-pointer overflow-hidden flex flex-col"
+                           >
+                             {proj.cover && (
+                               <div className="h-48 w-full rounded-2xl overflow-hidden mb-1 relative bg-slate-100">
+                                 <div className="absolute inset-0 bg-blue-900/10 group-hover:bg-transparent transition-colors z-10"></div>
+                                 <img src={proj.cover} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                               </div>
+                             )}
+                             <div className="p-6 flex-1 flex flex-col">
+                               <span className="text-[10px] font-bold text-blue-600 tracking-widest uppercase mb-2 block">{proj.category || 'Portofolio'}</span>
+                               <h5 className="text-xl font-bold text-slate-800 mb-3 group-hover:text-blue-600 transition-colors">{proj.title}</h5>
+                               <p className="text-slate-500 text-sm line-clamp-3 leading-relaxed mb-4 flex-1">{proj.summary}</p>
+                               <div className="text-blue-600 text-sm font-bold group-hover:translate-x-1 transition-transform">
+                                 Detail Proyek &rarr;
+                               </div>
+                             </div>
+                           </div>
                         ))}
                       </div>
                     </div>
                   )}
                 </div>
-              );
-            })}
-          </div>
+              </section>
 
-          {/* Independent Projects (e.g. Freelance) */}
-          {independentProjects.length > 0 && (
-            <div className="mt-24">
-              <h3 className="text-2xl font-bold mb-8 text-slate-800 flex items-center gap-4">
-                <span>Proyek Independen & Freelance</span>
-                <div className="h-px bg-slate-200 flex-1"></div>
-              </h3>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {independentProjects.map(proj => (
-                   <div 
-                    key={proj.id} 
-                    onClick={() => onOpenProject(proj)}
-                    className="group bg-white rounded-3xl p-1 border border-slate-100 shadow-sm hover:shadow-xl hover:border-blue-100 transition-all cursor-pointer overflow-hidden"
-                   >
-                     {proj.coverImage && (
-                       <div className="h-56 w-full rounded-2xl overflow-hidden mb-1 relative">
-                         <div className="absolute inset-0 bg-blue-900/10 group-hover:bg-transparent transition-colors z-10"></div>
-                         <img src={proj.coverImage} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                       </div>
-                     )}
-                     <div className="p-6">
-                       <span className="text-xs font-bold text-blue-600 tracking-wider uppercase mb-2 block">{proj.category || 'Freelance'}</span>
-                       <h5 className="text-xl font-bold text-slate-800 mb-3 group-hover:text-blue-600 transition-colors">{proj.title}</h5>
-                       <p className="text-slate-500 text-sm line-clamp-3 leading-relaxed">{proj.shortDescription}</p>
-                       <div className="mt-6 flex items-center text-blue-600 text-sm font-semibold group-hover:translate-x-2 transition-transform">
-                         View Details <i className="fas fa-arrow-right ml-2"></i>
-                       </div>
-                     </div>
-                   </div>
-                ))}
-              </div>
+              {/* 5. SKILLS & SOFTWARE */}
+              <section className="py-24 px-6 bg-slate-50 border-t border-slate-100">
+                <div className="max-w-6xl mx-auto">
+                  <h3 className="text-3xl font-bold mb-4 text-slate-800 text-center">Keahlian & Perangkat Lunak</h3>
+                  <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-16 mx-auto"></div>
+                  
+                  <div className="flex flex-wrap justify-center gap-3 md:gap-4 max-w-4xl mx-auto">
+                    {data?.masterSkills && data.masterSkills.length > 0 ? (
+                      data.masterSkills.map((skill, idx) => (
+                        <span key={idx} className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-xl shadow-sm font-medium hover:border-blue-300 hover:text-blue-600 transition-colors cursor-default">
+                          {typeof skill === 'string' ? skill : (skill.name || 'Skill')}
+                        </span>
+                      ))
+                    ) : (
+                      // Fallback
+                      ['Lean Six Sigma', 'Process Improvement', 'AutoCAD / Inventor', 'Power Query', 'Data Analysis (Excel)', 'Minitab', 'Production Planning'].map((skill, idx) => (
+                        <span key={idx} className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-xl shadow-sm font-medium hover:border-blue-300 hover:text-blue-600 transition-colors cursor-default">
+                          {skill}
+                        </span>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </section>
+
+              {/* MODAL / PROJECT DETAIL POPUP */}
+              {activeProject && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+                  <div className="absolute inset-0 bg-slate-900/90 backdrop-blur-sm transition-opacity" onClick={() => setActiveProject(null)}></div>
+                  <div className="relative bg-white w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl animate-fade-in-up">
+                    <button onClick={() => setActiveProject(null)} className="absolute top-6 right-6 p-3 bg-white/50 hover:bg-white text-slate-800 rounded-full z-20 shadow-lg backdrop-blur-md transition-transform hover:scale-110">
+                      <IconClose />
+                    </button>
+                    
+                    {/* Header Image */}
+                    <div className="h-64 sm:h-96 relative bg-slate-900">
+                      {activeProject.cover && (
+                        <img src={activeProject.cover} alt={activeProject.title} className="w-full h-full object-cover opacity-80" />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+                      <div className="absolute bottom-8 left-8 right-8 md:bottom-12 md:left-12 text-white">
+                        <div className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-3 bg-blue-900/40 backdrop-blur-md inline-block px-3 py-1 rounded-full border border-blue-400/30">
+                          {activeProject.category || 'Project'}
+                        </div>
+                        <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">{activeProject.title}</h2>
+                      </div>
+                    </div>
+                    
+                    {/* Content Detail (Sesuai Struktur PDF 9 Bagian yang disederhanakan) */}
+                    <div className="p-8 md:p-12">
+                      <div className="grid md:grid-cols-12 gap-12">
+                        {/* Kolom Kiri: Background, Scope, Roles */}
+                        <div className="md:col-span-7 space-y-10">
+                          {activeProject.detail?.background && (
+                            <div>
+                              <h4 className="flex items-center text-lg font-bold text-slate-900 border-b-2 border-slate-100 pb-3 mb-4">
+                                <span className="bg-blue-50 text-blue-600 p-1.5 rounded-lg mr-3 text-sm">🎯</span> Latar Belakang & Tujuan
+                              </h4>
+                              <div className="space-y-4 text-slate-600 leading-relaxed font-light">
+                                <p><strong className="text-slate-800 font-semibold block mb-1">Background:</strong> {activeProject.detail.background}</p>
+                                {activeProject.detail?.objectives && (
+                                  <p><strong className="text-slate-800 font-semibold block mb-1">Objectives:</strong> {activeProject.detail.objectives}</p>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {(activeProject.detail?.scope || activeProject.detail?.roles) && (
+                            <div>
+                              <h4 className="flex items-center text-lg font-bold text-slate-900 border-b-2 border-slate-100 pb-3 mb-4">
+                                <span className="bg-emerald-50 text-emerald-600 p-1.5 rounded-lg mr-3 text-sm">⚙️</span> Ruang Lingkup & Peran
+                              </h4>
+                              <div className="space-y-4 text-slate-600 leading-relaxed font-light">
+                                {activeProject.detail?.scope && <p><strong className="text-slate-800 font-semibold block mb-1">Scope:</strong> {activeProject.detail.scope}</p>}
+                                {activeProject.detail?.roles && <p><strong className="text-slate-800 font-semibold block mb-1">Roles:</strong> {activeProject.detail.roles}</p>}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Kolom Kanan: Metodologi, Hasil, Tools */}
+                        <div className="md:col-span-5 space-y-8">
+                          {activeProject.detail?.methodology && (
+                            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                              <h4 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-3">Metodologi</h4>
+                              <p className="text-slate-600 leading-relaxed font-light text-sm">{activeProject.detail.methodology}</p>
+                            </div>
+                          )}
+
+                          {activeProject.detail?.results && (
+                            <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg shadow-blue-900/10">
+                              <h4 className="text-sm font-bold text-blue-200 uppercase tracking-widest mb-3">Pencapaian (Results)</h4>
+                              <p className="font-medium leading-relaxed">{activeProject.detail.results}</p>
+                            </div>
+                          )}
+                          
+                          {activeProject.tools && activeProject.tools.length > 0 && (
+                            <div>
+                              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Tools & Software</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {activeProject.tools.map((tool, i) => (
+                                  <span key={i} className="px-3 py-1 bg-white text-slate-600 rounded-lg text-xs font-bold border border-slate-200 shadow-sm">
+                                    {tool}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* FOOTER */}
+              <footer className="bg-slate-900 text-slate-400 py-12 text-center border-t border-slate-800 mt-auto">
+                <div className="max-w-6xl mx-auto px-6">
+                  <p className="font-light text-sm">© {new Date().getFullYear()} {data?.hero?.name}. All rights reserved.</p>
+                </div>
+              </footer>
             </div>
-          )}
-        </div>
-      </section>
+          );
+        };
 
-      {/* 5. SKILLS & SOFTWARE */}
-      <section className="py-24 px-6 bg-slate-50 border-t border-slate-100">
-        <div className="max-w-6xl mx-auto">
-          <h3 className="text-3xl font-bold mb-4 text-slate-800 text-center">Keahlian & Perangkat Lunak</h3>
-          <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-16 mx-auto"></div>
-          
-          <div className="flex flex-wrap justify-center gap-3">
-            {data.masterSkills && data.masterSkills.length > 0 ? (
-              data.masterSkills.map(skill => (
-                <span key={skill.id} className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-full shadow-sm font-medium hover:border-blue-300 hover:text-blue-600 transition-colors cursor-default">
-                  {skill.name}
-                </span>
-              ))
-            ) : (
-              // Fallback / Placeholder jika masterSkills kosong
-              ['Lean Six Sigma', 'Process Improvement', 'Data Analysis (Excel)', 'PPC / Production Planning', 'Autodesk Inventor', 'WinQSB', 'Google Apps Script'].map((skill, idx) => (
-                <span key={idx} className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-full shadow-sm font-medium hover:border-blue-300 hover:text-blue-600 transition-colors cursor-default">
-                  {skill}
-                </span>
-              ))
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="bg-slate-900 text-slate-400 py-12 text-center border-t border-slate-800">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="flex justify-center gap-6 mb-6">
-             <a href="mailto:Kurniawanhidayatullahll@gmail.com" className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors">
-                <i className="fas fa-envelope"></i>
-             </a>
-             <a href="https://www.linkedin.com/in/kurniawan-h" target="_blank" className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors">
-                <i className="fab fa-linkedin-in"></i>
-             </a>
-          </div>
-          <p className="font-light">© {new Date().getFullYear()} Kurniawan Hidayatullah. All rights reserved.</p>
-        </div>
-      </footer>
-    </div>
-  );
-};
         // ==========================================
         // SEGMENT 6: APP WRAPPER & FIREBASE
         // ==========================================
