@@ -69,6 +69,13 @@
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            animation: marquee 40s linear infinite;
+        }
     </style>
 </head>
 <body class="bg-brand-bg text-brand-navy antialiased relative selection:bg-brand-orange selection:text-white">
@@ -104,7 +111,8 @@
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    callback(canvas.toDataURL('image/jpeg', 0.8));
+                    // MENGGUNAKAN WEBP & QUALITY 0.5: Agar file sangat ringan (< 50KB) dan tidak menabrak batas 1MB Firebase
+                    callback(canvas.toDataURL('image/webp', 0.5));
                 };
             };
         };
@@ -192,7 +200,13 @@
                 results: "Meningkatkan kecepatan screening kandidat dan menyediakan database talenta yang mudah dicari."
               }
             }
-          ]
+          ],
+          skills: {
+            industrial: ['MRP & BOM', 'WIP Tracking', 'Line Balancing', 'Time & Motion Study'],
+            web: ['JavaScript (ES6)', 'HTML & CSS', 'Tailwind', 'Google Apps Script'],
+            database: ['Firebase Realtime DB', 'Firestore', 'MySQL', 'REST API'],
+            quality: ['Lean Six Sigma', 'OEE / TPM', 'SPC & Minitab', '5S & Kaizen']
+          }
         };
 
         // ==========================================
@@ -314,10 +328,10 @@
                   <div className="font-display font-black text-xl text-brand-navy">ADMIN<span className="text-brand-orange">PANEL</span></div>
                 </div>
                 <div className="flex-1 overflow-y-auto py-6 space-y-1">
-                  {['Hero', 'Experience', 'Projects', 'Contact'].map((tab) => (
+                  {['Hero', 'Experience', 'Projects', 'Skills', 'Contact'].map((tab) => (
                     <button key={tab} onClick={() => { setActiveTab(tab); setEditingItem(null); }}
                       className={`w-full flex items-center px-6 py-3 font-bold transition-colors ${activeTab === tab ? 'bg-brand-orange/10 text-brand-orange border-r-4 border-brand-orange' : 'text-slate-500 hover:bg-slate-50'}`}>
-                      <i className={`fa-solid fa-${tab === 'Hero' ? 'user' : tab === 'Experience' ? 'briefcase' : tab === 'Projects' ? 'boxes-stacked' : 'envelope'} w-6`}></i> {tab} Section
+                      <i className={`fa-solid fa-${tab === 'Hero' ? 'user' : tab === 'Experience' ? 'briefcase' : tab === 'Projects' ? 'boxes-stacked' : tab === 'Skills' ? 'star' : 'envelope'} w-6`}></i> {tab} Section
                     </button>
                   ))}
                 </div>
@@ -427,35 +441,22 @@
                         </div>
                     )}
 
-                    {activeTab === 'Experience' && (
-                        <div>
-                            {editingItem?.type === 'exp' ? (
-                                <ExperienceEditor 
-                                    exp={editingItem.id === 'new' ? null : formData.experience.find(e => e.id === editingItem.id)}
-                                    onCancel={() => setEditingItem(null)}
-                                    onSave={(newExp) => {
-                                        const newArray = editingItem.id === 'new' ? [...(formData.experience||[]), newExp] : formData.experience.map(e => e.id === newExp.id ? newExp : e);
-                                        setFormData({...formData, experience: newArray});
-                                        setEditingItem(null);
-                                    }}
-                                />
-                            ) : (
-                                <div className="space-y-4">
-                                    <button onClick={() => setEditingItem({type: 'exp', id: 'new'})} className="mb-4 px-4 py-2.5 bg-slate-100 text-brand-navy font-bold rounded-lg font-mono text-xs hover:bg-slate-200 border border-slate-200">+ TAMBAH PENGALAMAN</button>
-                                    {(formData.experience || []).map((exp) => (
-                                        <div key={exp.id} className="flex justify-between items-center p-4 border rounded-xl bg-slate-50">
-                                            <div className="flex items-center gap-3">
-                                                {exp.companyLogo && <img src={exp.companyLogo} className="w-10 h-10 rounded-lg object-contain bg-white border p-1" />}
-                                                <div><div className="font-bold text-brand-navy">{exp.role}</div><div className="text-xs text-slate-500 mt-1">{exp.company} • {exp.period}</div></div>
-                                            </div>
-                                            <div className="space-x-2 flex">
-                                                <button onClick={() => setEditingItem({type: 'exp', id: exp.id})} className="px-3 py-1.5 bg-white border rounded shadow-sm text-xs font-bold text-slate-700 hover:text-brand-orange"><i className="fa-solid fa-pen"></i> Edit</button>
-                                                <button onClick={() => setFormData({...formData, experience: formData.experience.filter(e => e.id !== exp.id)})} className="px-3 py-1.5 bg-white border rounded shadow-sm text-xs font-bold text-red-500 hover:bg-red-50"><i className="fa-solid fa-trash"></i></button>
-                                            </div>
-                                        </div>
-                                    ))}
+                    {activeTab === 'Skills' && (
+                        <div className="space-y-6">
+                            <div className="p-4 bg-blue-50 text-blue-700 rounded-lg text-xs font-mono font-bold mb-4">
+                                <i className="fa-solid fa-circle-info mr-2"></i> Pisahkan setiap skill dengan KOMA (,).
+                            </div>
+                            {['industrial', 'web', 'database', 'quality'].map(cat => (
+                                <div key={cat} className="space-y-2">
+                                    <label className="font-bold text-slate-700 uppercase tracking-widest text-xs">{cat} Skills</label>
+                                    <textarea
+                                        rows="2"
+                                        value={(formData.skills?.[cat] || []).join(', ')}
+                                        onChange={e => handleNestedChange('skills', cat, e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+                                        className="w-full border p-2.5 rounded bg-slate-50 text-sm font-mono"
+                                    ></textarea>
                                 </div>
-                            )}
+                            ))}
                         </div>
                     )}
 
@@ -495,6 +496,12 @@
               if(!text) return null;
               return text.split('\n').map((line, i) => <li key={i} className="mb-1">{line.replace('• ', '')}</li>);
           };
+
+          // Kumpulkan semua gambar dari Pengalaman & Proyek untuk Carousel
+          const carouselItems = [
+              ...(data.experience || []).filter(e => e.documentationImage).map(e => ({ img: e.documentationImage, title: e.role, type: 'Pengalaman', link: '#experience' })),
+              ...(data.projects || []).filter(p => p.coverImage).map(p => ({ img: p.coverImage, title: p.title, type: 'Proyek', link: '#projects' }))
+          ];
 
           return (
             <div className="font-sans">
@@ -568,15 +575,21 @@
                                   </div>
                               </div>
 
-                              {/* LOGO CAROUSEL */}
-                              {data.hero.clientLogos && data.hero.clientLogos.length > 0 && (
-                                  <div className="mt-8 pt-8 border-t border-slate-300/60 overflow-hidden w-full relative">
-                                      <p className="text-[10px] font-mono font-bold text-slate-500 mb-4 uppercase tracking-widest">Kolaborasi & Klien</p>
-                                      <div className="flex overflow-hidden relative w-full" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}>
-                                          <div className="flex gap-10 items-center animate-infinite-scroll">
-                                              {/* Render twice for seamless looping effect */}
-                                              {[...data.hero.clientLogos, ...data.hero.clientLogos, ...data.hero.clientLogos].map((logo, idx) => (
-                                                  <img key={idx} src={logo} alt="Client Logo" className="h-8 sm:h-10 w-auto object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0 cursor-default" />
+                              {/* DYNAMIC GALLERY CAROUSEL (32:9) */}
+                              {carouselItems.length > 0 && (
+                                  <div className="mt-8 pt-8 border-t border-slate-300/60 w-full relative">
+                                      <p className="text-[10px] font-mono font-bold text-slate-500 mb-4 uppercase tracking-widest">GALERI & DOKUMENTASI KEGIATAN</p>
+                                      <div className="w-full aspect-[32/9] relative overflow-hidden group rounded-xl bg-slate-900 shadow-lg border border-slate-200">
+                                          <div className="flex absolute left-0 top-0 h-full animate-marquee hover:[animation-play-state:paused] w-max">
+                                              {[...carouselItems, ...carouselItems].map((item, idx) => (
+                                                  <a key={idx} href={item.link} className="h-full aspect-video flex-shrink-0 relative block mx-0.5 overflow-hidden cursor-pointer group/item">
+                                                      <div className="absolute inset-0 bg-brand-navy/50 group-hover/item:bg-transparent transition-colors duration-500 z-10"></div>
+                                                      <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+                                                      <div className="absolute bottom-2 left-3 right-3 z-20 pointer-events-none group-hover/item:opacity-0 transition-opacity">
+                                                          <span className="px-1.5 py-0.5 bg-brand-orange text-white text-[9px] font-mono font-bold uppercase rounded shadow-sm">{item.type}</span>
+                                                          <h3 className="text-white font-display font-bold text-xs mt-1 truncate drop-shadow-md">{item.title}</h3>
+                                                      </div>
+                                                  </a>
                                               ))}
                                           </div>
                                       </div>
@@ -803,48 +816,30 @@
                               <div className="w-12 h-12 rounded-xl bg-brand-orange/10 text-brand-orange flex items-center justify-center text-xl"><i className="fa-solid fa-gears"></i></div>
                               <h3 className="font-display font-bold text-brand-navy text-lg leading-tight">Industrial Engineering</h3>
                               <div className="flex flex-wrap gap-2 pt-2">
-                                  {['MRP & BOM', 'WIP Tracking', 'Line Balancing', 'Time & Motion Study'].map(s => <span key={s} className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-mono text-[10px] font-semibold">{s}</span>)}
+                                  {(data.skills?.industrial || []).map(s => <span key={s} className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-mono text-[10px] font-semibold">{s}</span>)}
                               </div>
                           </div>
                           <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 card-shadow space-y-4">
                               <div className="w-12 h-12 rounded-xl bg-brand-navy/10 text-brand-navy flex items-center justify-center text-xl"><i className="fa-solid fa-code"></i></div>
                               <h3 className="font-display font-bold text-brand-navy text-lg leading-tight">Web & Software Dev</h3>
                               <div className="flex flex-wrap gap-2 pt-2">
-                                  {['JavaScript (ES6)', 'HTML & CSS', 'Tailwind', 'Google Apps Script'].map(s => <span key={s} className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-mono text-[10px] font-semibold">{s}</span>)}
+                                  {(data.skills?.web || []).map(s => <span key={s} className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-mono text-[10px] font-semibold">{s}</span>)}
                               </div>
                           </div>
                           <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 card-shadow space-y-4">
                               <div className="w-12 h-12 rounded-xl bg-brand-orange/10 text-brand-orange flex items-center justify-center text-xl"><i className="fa-solid fa-database"></i></div>
                               <h3 className="font-display font-bold text-brand-navy text-lg leading-tight">Databases & Cloud</h3>
                               <div className="flex flex-wrap gap-2 pt-2">
-                                  {['Firebase Realtime DB', 'Firestore', 'MySQL', 'REST API'].map(s => <span key={s} className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-mono text-[10px] font-semibold">{s}</span>)}
+                                  {(data.skills?.database || []).map(s => <span key={s} className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-mono text-[10px] font-semibold">{s}</span>)}
                               </div>
                           </div>
                           <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 card-shadow space-y-4">
                               <div className="w-12 h-12 rounded-xl bg-brand-navy/10 text-brand-navy flex items-center justify-center text-xl"><i className="fa-solid fa-chart-line"></i></div>
                               <h3 className="font-display font-bold text-brand-navy text-lg leading-tight">Quality & Cont. Imp.</h3>
                               <div className="flex flex-wrap gap-2 pt-2">
-                                  {['Lean Six Sigma', 'OEE / TPM', 'SPC & Minitab', '5S & Kaizen'].map(s => <span key={s} className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-mono text-[10px] font-semibold">{s}</span>)}
+                                  {(data.skills?.quality || []).map(s => <span key={s} className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-mono text-[10px] font-semibold">{s}</span>)}
                               </div>
                           </div>
-                      </div>
-                  </div>
-              </section>
-
-              {/* DMAIC METHODOLOGY */}
-              <section className="py-16 md:py-20 border-t border-slate-300/80 bg-slate-50">
-                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-                      <div className="text-center max-w-2xl mx-auto space-y-2">
-                          <span className="text-brand-orange text-xs font-mono font-bold uppercase tracking-widest">CONTINUOUS IMPROVEMENT</span>
-                          <h2 className="text-3xl sm:text-4xl font-display font-black text-brand-navy uppercase tracking-tight">ENGINEERING METHODOLOGY</h2>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-                          {['DEFINE', 'MEASURE', 'ANALYZE', 'IMPROVE', 'CONTROL'].map((step, i) => (
-                              <div key={step} className="text-center space-y-3">
-                                  <div className={`w-14 h-14 rounded-full ${i % 2 === 0 ? 'bg-brand-orange' : 'bg-brand-navy'} text-white font-display font-black text-lg mx-auto flex items-center justify-center shadow-md`}>0{i+1}</div>
-                                  <h3 className="font-display font-bold text-brand-navy uppercase text-sm">{step}</h3>
-                              </div>
-                          ))}
                       </div>
                   </div>
               </section>
@@ -992,8 +987,14 @@
           }, []);
 
           const handleSaveData = async (newData) => {
-            setPortfolioData(newData);
+            // Mencegah Silent Fail jika ukuran file meledak melebihi batas Firebase
+            const sizeInBytes = new Blob([JSON.stringify(newData)]).size;
+            if (sizeInBytes > 950000) { 
+                throw new Error(`Ukuran total data terlalu besar (${(sizeInBytes/1024/1024).toFixed(2)} MB). Batas Firebase adalah 1MB. Hapus beberapa foto dokumentasi proyek.`);
+            }
+
             if (db && fbApi) await fbApi.setDoc(fbApi.doc(db, 'portfolio_v2', 'main_data'), newData);
+            setPortfolioData(newData);
           };
 
           return view === 'public' 
