@@ -236,7 +236,7 @@
         };
 
         const ExperienceEditor = ({ exp, onSave, onCancel }) => {
-            const [local, setLocal] = useState(exp || { id: Date.now(), company: '', role: '', period: '', description: '', color: 'text-brand-orange', companyLogo: '' });
+            const [local, setLocal] = useState(exp || { id: Date.now(), company: '', role: '', period: '', description: '', color: 'text-brand-orange', companyLogo: '', documentationImage: '' });
             return (
                 <div className="space-y-4">
                     <h3 className="text-lg font-bold border-b pb-2">{exp ? 'Edit Experience' : 'Add Experience'}</h3>
@@ -254,8 +254,18 @@
                         </div>
                     </div>
                     <textarea placeholder="Deskripsi Tugas (Gunakan bullet points atau enter)" rows="4" value={local.description} onChange={e => setLocal({...local, description: e.target.value})} className="border p-2 rounded w-full text-sm"></textarea>
+                    
+                    <div className="pt-2">
+                        <label className="block text-xs font-bold text-slate-500 mb-1">Foto Dokumentasi Kegiatan (Opsional)</label>
+                        <input type="file" accept="image/png, image/jpeg" onChange={e => {
+                            const file = e.target.files[0];
+                            if (file) compressImage(file, (base64) => setLocal({...local, documentationImage: base64}));
+                        }} className="border p-2 rounded w-full text-xs" />
+                        {local.documentationImage && <img src={local.documentationImage} alt="Doc Preview" className="h-32 mt-2 rounded-lg object-cover border shadow-sm" />}
+                    </div>
+
                     <div className="flex justify-end gap-3 pt-4 border-t">
-                        <button onClick={onCancel} className="px-4 py-2 border rounded">Batal</button>
+                        <button onClick={onCancel} className="px-4 py-2 border rounded text-slate-600">Batal</button>
                         <button onClick={() => onSave(local)} className="px-4 py-2 bg-brand-orange text-white rounded">Simpan</button>
                     </div>
                 </div>
@@ -558,7 +568,22 @@
                                   </div>
                               </div>
 
-                              <div className="flex flex-wrap items-center gap-4">
+                              {/* LOGO CAROUSEL */}
+                              {data.hero.clientLogos && data.hero.clientLogos.length > 0 && (
+                                  <div className="mt-8 pt-8 border-t border-slate-300/60 overflow-hidden w-full relative">
+                                      <p className="text-[10px] font-mono font-bold text-slate-500 mb-4 uppercase tracking-widest">Kolaborasi & Klien</p>
+                                      <div className="flex overflow-hidden relative w-full" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}>
+                                          <div className="flex gap-10 items-center animate-infinite-scroll">
+                                              {/* Render twice for seamless looping effect */}
+                                              {[...data.hero.clientLogos, ...data.hero.clientLogos, ...data.hero.clientLogos].map((logo, idx) => (
+                                                  <img key={idx} src={logo} alt="Client Logo" className="h-8 sm:h-10 w-auto object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0 cursor-default" />
+                                              ))}
+                                          </div>
+                                      </div>
+                                  </div>
+                              )}
+
+                              <div className="flex flex-wrap items-center gap-4 mt-8">
                                   <a href="#projects" className="px-7 py-3.5 rounded-xl bg-brand-navy hover:bg-brand-orange text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-2">
                                       <span>LIHAT PORTOFOLIO</span><i className="fa-solid fa-arrow-down-long text-xs"></i>
                                   </a>
@@ -697,6 +722,11 @@
                                   <ul className="space-y-2 text-slate-700 text-xs sm:text-sm leading-relaxed list-disc list-inside mt-4">
                                       {renderList(exp.description)}
                                   </ul>
+                                  {exp.documentationImage && (
+                                      <div className="mt-6 pt-2">
+                                          <img src={exp.documentationImage} alt={`Dokumentasi ${exp.company}`} className="w-full md:w-3/4 lg:w-2/3 max-h-[28rem] object-cover rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow" />
+                                      </div>
+                                  )}
                               </div>
                           ))}
                       </div>
