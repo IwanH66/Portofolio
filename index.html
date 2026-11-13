@@ -561,13 +561,9 @@
               <header className="sticky top-0 z-40 w-full bg-brand-bg/90 backdrop-blur-md border-b border-slate-300/60">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
                       <a href="#" className="flex items-center gap-3 group">
-                          <div className="w-10 h-10 rounded-full bg-brand-navy flex items-center justify-center text-white font-display font-black text-xl group-hover:bg-brand-orange transition-colors duration-300">
-                              {data.hero.name.charAt(0)}
-                          </div>
-                          <div className="flex flex-col">
-                              <span className="font-extrabold text-brand-navy text-sm tracking-tight font-display leading-tight">{data.hero.role}</span>
-                              <span className="text-[10px] font-mono text-brand-orange font-bold uppercase tracking-widest">{data.hero.subRole}</span>
-                          </div>
+                          <span className="font-extrabold text-brand-navy text-xl tracking-tight font-display leading-tight group-hover:text-brand-orange transition-colors">
+                              {data.hero.name === 'Kurniawan H.' ? 'Kurniawan Hidayatullah' : data.hero.name}
+                          </span>
                       </a>
                       <nav className="hidden md:flex items-center gap-6 font-mono text-xs font-bold text-slate-700 uppercase">
                           <a href="#education" className="hover:text-brand-orange transition-colors">Pendidikan</a>
@@ -586,25 +582,20 @@
               {/* 1. HERO SECTION */}
               <section className="pt-6 pb-10 md:pt-10 md:pb-16 overflow-hidden">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                      <div className="mb-6 md:mb-8 animate-fade-in-up">
-                          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[80px] font-display font-black tracking-tighter uppercase leading-[0.88] text-brand-navy">
-                              <span className="text-brand-orange block">{data.hero.title1 || 'ENGINEERING'}</span>
-                              <span>{data.hero.title2 || 'PORTFOLIO'}</span>
-                          </h1>
-                      </div>
-
-                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-center">
-                          {/* Left Column */}
-                          <div className="lg:col-span-7 space-y-6 md:space-y-8 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-                              <div className="space-y-3">
-                                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-200/80 text-brand-navy font-mono text-xs font-bold uppercase border border-slate-300">
-                                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                      Available for Projects
-                                  </div>
-                                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-navy tracking-tight font-display">
-                                      {data.hero.greeting}
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
+                          {/* Left Column (Text & Stats) */}
+                          <div className="order-2 lg:order-1 lg:col-span-7 space-y-6 md:space-y-8 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                              <div className="space-y-3 md:space-y-4">
+                                  <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-brand-navy tracking-tight font-display leading-tight">
+                                      Halo! Saya <br className="hidden sm:block" />
+                                      <span className="text-brand-orange">{data.hero.name === 'Kurniawan H.' ? 'Kurniawan Hidayatullah' : data.hero.name}</span>
+                                  </h1>
+                                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-brand-navy font-display flex flex-wrap items-center gap-2 sm:gap-3">
+                                      <span>{data.hero.role}</span>
+                                      <span className="text-brand-orange font-light">|</span>
+                                      <span>{data.hero.subRole.replace(/^&?\s*/, '')}</span>
                                   </h2>
-                                  <p className="text-slate-700 text-sm sm:text-base md:text-lg leading-relaxed max-w-xl font-normal whitespace-pre-wrap">
+                                  <p className="text-slate-700 text-sm sm:text-base md:text-lg leading-relaxed max-w-xl font-normal whitespace-pre-wrap pt-2">
                                       {data.hero.description}
                                   </p>
                               </div>
@@ -658,8 +649,8 @@
                           </div>
 
                           {/* Right Column: Photo */}
-                          <div className="lg:col-span-5 relative flex justify-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                              <div className="relative w-full max-w-md aspect-[4/5]">
+                          <div className="order-1 lg:order-2 lg:col-span-5 relative flex justify-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                              <div className="relative w-full max-w-md aspect-[4/5] mt-0 lg:mt-2">
                                   <div className="absolute -right-4 -bottom-4 w-72 h-72 sm:w-80 sm:h-80 bg-brand-orange rounded-full pointer-events-none opacity-90"></div>
                                   <div className="relative z-10 w-full h-full rounded-[2.5rem] bg-brand-navy border-4 border-white shadow-2xl overflow-hidden group">
                                       <img src={data.hero.photoUrl} alt={data.hero.name} 
@@ -668,7 +659,7 @@
                                       />
                                       <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-brand-navy/90 backdrop-blur-md border border-white/20 text-white font-mono text-xs space-y-1">
                                           <div className="flex items-center justify-between text-slate-300">
-                                              <span className="font-bold text-brand-orange uppercase">{data.hero.name}, S.T.</span>
+                                              <span className="font-bold text-brand-orange uppercase">{data.hero.name === 'Kurniawan H.' ? 'Kurniawan Hidayatullah' : data.hero.name}, S.T.</span>
                                               <span>{new Date().getFullYear()}</span>
                                           </div>
                                           <div className="text-[11px] text-slate-300 truncate">{data.hero.role}</div>
