@@ -1,51 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Portfolio - Industrial Engineer</title>
+    <title>Kurniawan H. — Industrial Engineer & System Developer</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS & Config -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            orange: '#eb5e28',
+                            orangeDark: '#d94e18',
+                            navy: '#0f172a',
+                            slate: '#1e293b',
+                            bg: '#f2f5f3',
+                            card: '#ffffff',
+                            muted: '#64748b'
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Montserrat', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    
-    <!-- Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f2f5f3; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #eb5e28; }
+        
+        .bg-dot-pattern {
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 20px 20px;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .card-shadow:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px -6px rgba(15, 23, 42, 0.1);
+        }
+        .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="bg-[#F7F8FA]">
-    <div id="root"></div>
+<body class="bg-brand-bg text-brand-navy antialiased relative selection:bg-brand-orange selection:text-white">
+    <!-- Subtle Technical Background Texture -->
+    <div class="fixed inset-0 pointer-events-none z-0 bg-dot-pattern opacity-60"></div>
+    
+    <div id="root" class="relative z-10"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
 
         // ==========================================
-        // SEGMENT 1: UTILITIES, ICONS & COMPRESSOR
+        // SEGMENT 1: UTILITIES & COMPRESSOR
         // ==========================================
-        const IconMapPin = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>;
-        const IconMail = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>;
-        const IconDownload = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>;
-        const IconClose = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;
-        const IconDashboard = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>;
-        const IconEdit = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
-        const IconBriefcase = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>;
-        const IconFileText = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>;
-        const IconUpload = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>;
-        const IconAcademic = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>;
-
-        // Image Compressor Logic (Client-Side)
         const compressImage = (file, callback) => {
             if (!file) return;
             const reader = new FileReader();
@@ -67,509 +104,338 @@
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    callback(canvas.toDataURL('image/jpeg', 0.8)); // Convert to Base64 (Compressed JPG)
+                    callback(canvas.toDataURL('image/jpeg', 0.8));
                 };
             };
         };
 
         // ==========================================
-        // SEGMENT 2: DATA STRUCTURE & MOCK
+        // SEGMENT 2: DATA STRUCTURE (UPDATED FOR NEW UI)
         // ==========================================
         const initialData = {
           hero: {
-            name: "Alexander Ryandi",
-            headline: "Industrial & Manufacturing Engineer",
-            description: "Specializing in lean manufacturing, production optimization, and continuous improvement.",
-            location: "Jakarta, Indonesia",
-            email: "alexander.eng@example.com",
-            photoUrl: "https://placehold.co/600x800/101C2C/FFFFFF?text=AR",
-            photoSettings: { zoom: 100, posX: 50, posY: 50 }
-          },
-          about: {
-            summary: "A results-driven Industrial Engineer with a proven track record of increasing production efficiency by 35%.",
-            education: "B.Sc. in Industrial Engineering - ITB",
-            focus: "Production Planning, QC, Process Automation"
+            name: "Kurniawan H.",
+            role: "INDUSTRIAL ENGINEER",
+            subRole: "& SYSTEM DEVELOPER",
+            title1: "ENGINEERING",
+            title2: "PORTFOLIO",
+            greeting: "Halo! Saya Kurniawan H.",
+            description: "Engineer Teknik Industri yang mengombinasikan optimasi sistem manufaktur lapangan dengan pengembangan perangkat lunak berbasis web. Berpengalaman dalam kalkulasi MRP Explosion, WIP Tracking, dan analitik OEE Real-time.",
+            email: "kurniawan.engineering@example.com",
+            phone: "+62 812-3456-7890",
+            location: "Gresik / Surabaya, Jawa Timur",
+            photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=800&q=80",
+            photoSettings: { zoom: 100, posX: 50, posY: 50 },
+            stats: [
+              { id: 1, val: "3+", label: "INTERNSHIPS" },
+              { id: 2, val: "4+", label: "SYSTEMS BUILT" },
+              { id: 3, val: "1", label: "LSS GREEN BELT" },
+              { id: 4, val: "3.58", label: "IPK (UTM)" }
+            ]
           },
           educations: [
-            { id: 1, name: "Universitas Trunojoyo Madura", role: "Sarjana (S1) Teknik Industri", period: "Aug 2022 - May 2026", info: "IPK: 3.58 / 4.00", logo: "" }
+            { id: 1, name: "Universitas Trunojoyo Madura", role: "S1 Teknik Industri (S.T.)", period: "Kelulusan: Juni 2026", info: "3.58", logo: "", focus: "Fokus studi pada Perencanaan & Pengendalian Production (PPC), Analisis Sistem Manufaktur, Ergonomi & Perancangan Sistem Kerja." }
           ],
-          organizations: [
-            { id: 1, name: "Ikatan Mahasiswa Ronggolawe", role: "Divisi Infokom", period: "Sep 2023 - Oct 2025", info: "", logo: "" }
+          certifications: [
+            { id: 1, name: "Lean Six Sigma Green Belt (LSSGB)", type: "CERTIFIED", icon: "fa-award", desc: "Kompetensi dalam metrik DMAIC, pemetaan aliran nilai (Value Stream Mapping), pengendalian kualitas statistik (SPC), dan reduksi variansi proses." },
+            { id: 2, name: "Supply Chain & Quality Control Essentials", type: "CREDENTIAL", icon: "fa-certificate", desc: "Sertifikasi pelatihan manajerial stok, ledakan komponen BOM, dan audit pengendalian mutu proses manufaktur." },
+            { id: 3, name: "Google Apps Script & Web Automation", type: "CREDENTIAL", icon: "fa-code-commit", desc: "Otomatisasi alur kerja spreadsheet dan pembuatan backend database berbasis cloud untuk pelaporan bisnis." }
           ],
-          masterSkills: ["Lean Six Sigma", "AutoCAD", "Minitab", "Power Query", "Data Analytics"],
           experience: [
             {
               id: 1,
-              company: "Astra International",
-              logo: "",
-              role: "Senior Process Engineer",
-              period: "2020 - Present",
-              location: "Jakarta",
-              department: "Manufacturing",
-              description: "Leading process optimization for automotive parts.",
-              achievements: ["Reduced cycle time by 15%"]
+              company: "PT Industri Kemasan Semen Gresik (IKSG)",
+              role: "Production Staff Intern",
+              period: "Agustus 2026",
+              icon: "fa-calendar-check",
+              color: "text-brand-orange",
+              description: "• Menganalisis alur produksi pembuatan kantong semen kertas bertingkat.\n• Membantu pembuatan logika kalkulasi ledakan material (MRP Explosion).\n• Menyusun pencatatan stok Work-In-Progress (WIP)."
+            },
+            {
+              id: 2,
+              company: "PT Indospring Tbk",
+              role: "Maintenance & Production Improvement Intern",
+              period: "2025 - 2026",
+              icon: "fa-calendar-check",
+              color: "text-brand-navy",
+              description: "• Mendukung program TPM pada lini perakitan dan penempaan pegas.\n• Mencatat log downtime mesin serta merumuskan indikator OEE.\n• Melakukan identifikasi pemborosan (waste identification)."
             }
           ],
           projects: [
             {
               id: 1,
-              title: "Lean Assembly Transformation",
-              category: "Continuous Improvement",
-              summary: "Redesign of the main assembly line.",
-              cover: "https://placehold.co/800x500/172B45/FFFFFF?text=Lean+Assembly",
-              experienceId: 1,
+              title: "MRP Explosion & WIP Tracker System",
+              category: "PRODUCTION PLANNING & CONTROL",
+              client: "PT SEMEN GRESIK (IKSG)",
+              summary: "Aplikasi kalkulasi ledakan material bertingkat untuk pabrik kantong semen. Mengendalikan stok WIP di departemen produksi.",
+              tools: "JavaScript / PHP / MySQL",
+              icon: "fa-boxes-stacked",
+              colorTheme: "bg-brand-navy text-white", // navy, slate, orange
               detail: {
-                background: "Existing line had 20% idle time.",
-                objectives: "Balance line and improve ergonomics.",
-                scope: "Main Assembly Line A",
-                roles: "Project Lead",
-                methodology: "Value Stream Mapping, 5S",
-                results: "Output +400 units/day.",
-                skills: ["Lean Six Sigma", "AutoCAD"]
+                background: "Proses manufaktur membutuhkan perhitungan presisi terkait kebutuhan bahan baku bertingkat di departemen Loom, Laminating, dan Printing.",
+                scope: "1. Algoritma ledakan BOM multi-level\n2. Pencatatan akurat penumpukan WIP",
+                results: "Menggantikan spreadsheet manual dengan dashboard berbasis web yang mempercepat perhitungan alokasi material hingga >60%."
+              }
+            },
+            {
+              id: 2,
+              title: "Resume & Candidate Management Web App",
+              category: "HRTECH & RECRUITMENT",
+              client: "WEB APP & FIREBASE",
+              summary: "Aplikasi web terkoneksi Firebase untuk mengindeks kompetensi pelamar, mengelola profil kandidat, dan otomatisasi.",
+              tools: "Firebase / JS ES6 / Tailwind",
+              icon: "fa-id-card-clip",
+              colorTheme: "bg-slate-900 text-white",
+              detail: {
+                background: "HR membutuhkan sistem terpusat untuk memilah dan menilai kandidat secara otomatis berdasarkan kualifikasi spesifik.",
+                scope: "1. Integrasi Auth & Database Cloud Firebase\n2. Pembobotan otomatis kualifikasi",
+                results: "Meningkatkan kecepatan screening kandidat dan menyediakan database talenta yang mudah dicari."
               }
             }
           ]
         };
 
         // ==========================================
-        // SEGMENT 3: ADMIN SUB-COMPONENTS
+        // SEGMENT 3: ADMIN COMPONENTS
         // ==========================================
-        const EduOrgEditor = ({ item, title, onSave, onCancel }) => {
-            const [local, setLocal] = useState(item || { id: Date.now(), name: '', role: '', period: '', info: '', logo: '' });
+        // (Reusing the robust form handlers from previous version, adapted for new fields)
+        const ProjectEditor = ({ project, onSave, onCancel }) => {
+            const [local, setLocal] = useState(project || { id: Date.now(), title: '', category: '', client: '', summary: '', tools: '', icon: 'fa-box', colorTheme: 'bg-brand-navy text-white', detail: { background: '', scope: '', results: '' } });
             
-            const handleImg = (e) => {
-                const file = e.target.files[0];
-                if (file) compressImage(file, (base64) => setLocal({...local, logo: base64}));
-            };
-
             return (
-                <div className="space-y-6">
-                    <h3 className="text-lg font-bold text-gray-800 border-b pb-2">{item ? `Edit ${title}` : `Add New ${title}`}</h3>
+                <div className="space-y-4">
+                    <h3 className="text-lg font-bold border-b pb-2">{project ? 'Edit Project' : 'Add Project'}</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                        <input type="text" placeholder="Project Title" value={local.title} onChange={e => setLocal({...local, title: e.target.value})} className="border p-2 rounded w-full" />
+                        <input type="text" placeholder="Category (e.g. PRODUCTION PLANNING)" value={local.category} onChange={e => setLocal({...local, category: e.target.value})} className="border p-2 rounded w-full" />
+                        <input type="text" placeholder="Client / Subtitle" value={local.client} onChange={e => setLocal({...local, client: e.target.value})} className="border p-2 rounded w-full" />
+                        <input type="text" placeholder="Tools (e.g. JS / Firebase)" value={local.tools} onChange={e => setLocal({...local, tools: e.target.value})} className="border p-2 rounded w-full" />
+                    </div>
+                    <textarea placeholder="Short Summary" rows="2" value={local.summary} onChange={e => setLocal({...local, summary: e.target.value})} className="border p-2 rounded w-full"></textarea>
                     
-                    <div className="flex items-center gap-4 p-4 border rounded bg-gray-50">
-                        <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-gray-300 rounded cursor-pointer bg-white hover:bg-gray-50 overflow-hidden">
-                            {local.logo ? (
-                                <img src={local.logo} className="w-full h-full object-contain p-1" alt="Logo" />
-                            ) : (
-                                <div className="text-center text-gray-400"><IconUpload /><span className="text-[10px] block mt-1">Logo</span></div>
-                            )}
-                            <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={handleImg} />
-                        </label>
-                        <div className="flex-1 space-y-2">
-                            <input type="text" placeholder="Atau paste link URL logo..." value={local.logo} onChange={e => setLocal({...local, logo: e.target.value})} className="w-full border p-2 rounded text-xs" />
-                            <p className="text-xs text-gray-500">Upload logo format JPG/PNG, otomatis dikompres.</p>
-                        </div>
+                    <div className="p-4 bg-slate-50 border rounded space-y-3">
+                        <p className="text-xs font-bold text-slate-500">POP-UP DETAILS (Background, Scope, Results)</p>
+                        <textarea placeholder="Background / Masalah" rows="2" value={local.detail.background} onChange={e => setLocal({...local, detail: {...local.detail, background: e.target.value}})} className="border p-2 rounded w-full text-xs"></textarea>
+                        <textarea placeholder="Scope / Poin-poin penting (Gunakan Enter)" rows="2" value={local.detail.scope} onChange={e => setLocal({...local, detail: {...local.detail, scope: e.target.value}})} className="border p-2 rounded w-full text-xs"></textarea>
+                        <textarea placeholder="Results / Hasil" rows="2" value={local.detail.results} onChange={e => setLocal({...local, detail: {...local.detail, results: e.target.value}})} className="border p-2 rounded w-full text-xs"></textarea>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <input type="text" placeholder="Nama Institusi / Organisasi" value={local.name} onChange={e => setLocal({...local, name: e.target.value})} className="border p-2 rounded" />
-                        <input type="text" placeholder="Gelar / Jabatan" value={local.role} onChange={e => setLocal({...local, role: e.target.value})} className="border p-2 rounded" />
-                        <input type="text" placeholder="Periode (e.g. Aug 2022 - May 2026)" value={local.period} onChange={e => setLocal({...local, period: e.target.value})} className="border p-2 rounded" />
-                        <input type="text" placeholder="Info Tambahan (Opsional, e.g. IPK: 3.58)" value={local.info} onChange={e => setLocal({...local, info: e.target.value})} className="border p-2 rounded" />
-                    </div>
                     <div className="flex justify-end gap-3 pt-4 border-t">
-                        <button onClick={onCancel} className="px-4 py-2 border rounded">Cancel</button>
-                        <button onClick={() => onSave(local)} className="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+                        <button onClick={onCancel} className="px-4 py-2 border rounded text-slate-600">Batal</button>
+                        <button onClick={() => onSave(local)} className="px-4 py-2 bg-brand-orange text-white rounded">Simpan Proyek</button>
                     </div>
                 </div>
             );
         };
 
         const ExperienceEditor = ({ exp, onSave, onCancel }) => {
-            const [local, setLocal] = useState(exp || { id: Date.now(), company: '', logo: '', role: '', period: '', location: '', department: '', description: '', achievements: [] });
-            
-            const handleImg = (e) => {
-                const file = e.target.files[0];
-                if (file) compressImage(file, (base64) => setLocal({...local, logo: base64}));
-            };
-
+            const [local, setLocal] = useState(exp || { id: Date.now(), company: '', role: '', period: '', description: '', color: 'text-brand-orange' });
             return (
-                <div className="space-y-6">
-                    <h3 className="text-lg font-bold text-gray-800 border-b pb-2">{exp ? 'Edit Experience' : 'Add New Experience'}</h3>
-                    
-                    <div className="flex items-center gap-4 p-4 border rounded bg-gray-50">
-                        <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-gray-300 rounded cursor-pointer bg-white hover:bg-gray-50 overflow-hidden">
-                            {local.logo ? (
-                                <img src={local.logo} className="w-full h-full object-contain p-1" alt="Logo" />
-                            ) : (
-                                <div className="text-center text-gray-400"><IconUpload /><span className="text-[10px] block mt-1">Logo PT</span></div>
-                            )}
-                            <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={handleImg} />
-                        </label>
-                        <div className="flex-1 space-y-2">
-                            <input type="text" placeholder="Atau paste link URL logo..." value={local.logo} onChange={e => setLocal({...local, logo: e.target.value})} className="w-full border p-2 rounded text-xs" />
-                            <p className="text-xs text-gray-500">Upload logo format JPG/PNG, otomatis dikompres.</p>
-                        </div>
-                    </div>
-
+                <div className="space-y-4">
+                    <h3 className="text-lg font-bold border-b pb-2">{exp ? 'Edit Experience' : 'Add Experience'}</h3>
                     <div className="grid grid-cols-2 gap-4">
-                        <input type="text" placeholder="Company Name" value={local.company} onChange={e => setLocal({...local, company: e.target.value})} className="border p-2 rounded" />
-                        <input type="text" placeholder="Job Title / Role" value={local.role} onChange={e => setLocal({...local, role: e.target.value})} className="border p-2 rounded" />
-                        <input type="text" placeholder="Period (e.g. 2020 - Present)" value={local.period} onChange={e => setLocal({...local, period: e.target.value})} className="border p-2 rounded" />
-                        <input type="text" placeholder="Location" value={local.location} onChange={e => setLocal({...local, location: e.target.value})} className="border p-2 rounded" />
+                        <input type="text" placeholder="Posisi / Role" value={local.role} onChange={e => setLocal({...local, role: e.target.value})} className="border p-2 rounded w-full" />
+                        <input type="text" placeholder="Nama Perusahaan" value={local.company} onChange={e => setLocal({...local, company: e.target.value})} className="border p-2 rounded w-full" />
+                        <input type="text" placeholder="Periode (e.g. 2025 - 2026)" value={local.period} onChange={e => setLocal({...local, period: e.target.value})} className="border p-2 rounded w-full" />
                     </div>
-                    <textarea placeholder="Job Overview" rows="3" value={local.description} onChange={e => setLocal({...local, description: e.target.value})} className="border p-2 rounded w-full"></textarea>
+                    <textarea placeholder="Deskripsi Tugas (Gunakan bullet points atau enter)" rows="4" value={local.description} onChange={e => setLocal({...local, description: e.target.value})} className="border p-2 rounded w-full text-sm"></textarea>
                     <div className="flex justify-end gap-3 pt-4 border-t">
-                        <button onClick={onCancel} className="px-4 py-2 border rounded">Cancel</button>
-                        <button onClick={() => onSave(local)} className="px-4 py-2 bg-blue-600 text-white rounded">Save Experience</button>
-                    </div>
-                </div>
-            );
-        };
-
-        const ProjectEditor = ({ project, onSave, onCancel }) => {
-            const [local, setLocal] = useState(project || { 
-                id: Date.now(), title: '', category: '', summary: '', cover: '', 
-                detail: { background: '', objectives: '', scope: '', roles: '', methodology: '', results: '', skills: [] }
-            });
-            const [tab, setTab] = useState('info'); // info, detail, image
-
-            const handleImg = (e) => {
-                const file = e.target.files[0];
-                if (file) compressImage(file, (base64) => setLocal({...local, cover: base64}));
-            };
-
-            return (
-                <div className="space-y-6">
-                    <div className="flex justify-between items-center border-b pb-4">
-                        <h3 className="text-lg font-bold text-gray-800">{project ? 'Edit Project' : 'Add Project'}</h3>
-                        <div className="flex bg-gray-100 p-1 rounded">
-                            {['info', 'detail', 'image'].map(t => (
-                                <button key={t} onClick={() => setTab(t)} className={`px-4 py-1 text-sm rounded capitalize ${tab === t ? 'bg-white shadow font-bold' : 'text-gray-500'}`}>{t}</button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {tab === 'info' && (
-                        <div className="space-y-4">
-                            <input type="text" placeholder="Project Title" value={local.title} onChange={e => setLocal({...local, title: e.target.value})} className="w-full border p-2 rounded" />
-                            <input type="text" placeholder="Category (e.g. Data Analytics)" value={local.category} onChange={e => setLocal({...local, category: e.target.value})} className="w-full border p-2 rounded" />
-                            <textarea placeholder="Short Summary" rows="3" value={local.summary} onChange={e => setLocal({...local, summary: e.target.value})} className="w-full border p-2 rounded"></textarea>
-                        </div>
-                    )}
-
-                    {tab === 'detail' && (
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2"><label className="text-xs font-bold text-gray-500">Background</label><textarea value={local.detail.background} onChange={e => setLocal({...local, detail: {...local.detail, background: e.target.value}})} className="w-full border p-2 rounded" rows="2"></textarea></div>
-                            <div className="space-y-2"><label className="text-xs font-bold text-gray-500">Objectives</label><textarea value={local.detail.objectives} onChange={e => setLocal({...local, detail: {...local.detail, objectives: e.target.value}})} className="w-full border p-2 rounded" rows="2"></textarea></div>
-                            <div className="space-y-2"><label className="text-xs font-bold text-gray-500">Scope</label><textarea value={local.detail.scope} onChange={e => setLocal({...local, detail: {...local.detail, scope: e.target.value}})} className="w-full border p-2 rounded" rows="2"></textarea></div>
-                            <div className="space-y-2"><label className="text-xs font-bold text-gray-500">Methodology</label><textarea value={local.detail.methodology} onChange={e => setLocal({...local, detail: {...local.detail, methodology: e.target.value}})} className="w-full border p-2 rounded" rows="2"></textarea></div>
-                            <div className="col-span-2 space-y-2"><label className="text-xs font-bold text-gray-500">Key Results</label><textarea value={local.detail.results} onChange={e => setLocal({...local, detail: {...local.detail, results: e.target.value}})} className="w-full border p-2 rounded" rows="2"></textarea></div>
-                        </div>
-                    )}
-
-                    {tab === 'image' && (
-                        <div className="space-y-4">
-                            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded cursor-pointer bg-gray-50 hover:bg-gray-100">
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6 text-gray-500">
-                                    <IconUpload />
-                                    <p className="mt-2 text-sm font-semibold">Upload JPG/PNG</p>
-                                    <p className="text-xs">Otomatis di-kompres (Max 800px)</p>
-                                </div>
-                                <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={handleImg} />
-                            </label>
-                            {local.cover && <img src={local.cover} alt="Preview" className="h-32 object-cover rounded border" />}
-                            <input type="text" placeholder="Atau paste link URL gambar..." value={local.cover} onChange={e => setLocal({...local, cover: e.target.value})} className="w-full border p-2 rounded text-xs" />
-                        </div>
-                    )}
-
-                    <div className="flex justify-end gap-3 pt-4 border-t">
-                        <button onClick={onCancel} className="px-4 py-2 border rounded">Cancel</button>
-                        <button onClick={() => onSave(local)} className="px-4 py-2 bg-blue-600 text-white rounded">Save Project</button>
+                        <button onClick={onCancel} className="px-4 py-2 border rounded">Batal</button>
+                        <button onClick={() => onSave(local)} className="px-4 py-2 bg-brand-orange text-white rounded">Simpan</button>
                     </div>
                 </div>
             );
         };
 
         // ==========================================
-        // SEGMENT 4: ADMIN DASHBOARD (MAIN)
+        // SEGMENT 4: ADMIN DASHBOARD
         // ==========================================
         const AdminDashboard = ({ data, setData, setView }) => {
           const [activeTab, setActiveTab] = useState('Hero');
           const [formData, setFormData] = useState(data);
-          const [notification, setNotification] = useState('');
-          const [editingItem, setEditingItem] = useState(null); // { type: 'exp'|'proj', id: number|'new' }
+          const [notification, setNotification] = useState(null);
+          const [editingItem, setEditingItem] = useState(null); 
 
           const handleNestedChange = (section, field, value) => {
             setFormData({ ...formData, [section]: { ...formData[section], [field]: value } });
           };
 
+          const handleStatChange = (id, field, value) => {
+            const newStats = formData.hero.stats.map(s => s.id === id ? { ...s, [field]: value } : s);
+            handleNestedChange('hero', 'stats', newStats);
+          };
+
           const handleSave = async () => {
             try {
                 await setData(formData);
-                setNotification('✅ Berhasil! Perubahan tersimpan permanen di Firebase.');
+                setNotification({ type: 'success', text: 'Berhasil disimpan ke Database!' });
             } catch(e) {
-                setNotification('❌ Error: ' + (e.message || 'Gagal menyimpan.'));
-                console.error(e);
+                setNotification({ type: 'error', text: 'Gagal: ' + e.message });
             }
-            setTimeout(() => setNotification(''), 5000);
+            setTimeout(() => setNotification(null), 3000);
           };
 
           return (
-            <div className="flex h-screen bg-[#F4F6F9] font-sans text-sm relative">
+            <div className="flex h-screen bg-slate-50 font-sans text-sm relative">
               {notification && (
-                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 bg-[#101C2C] text-white px-6 py-3 rounded shadow-lg animate-fade-in-up font-medium">
-                  {notification}
+                <div className={`absolute top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded shadow-lg font-bold animate-fade-in-up ${notification.type === 'success' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'}`}>
+                  {notification.text}
                 </div>
               )}
 
-              <div className="w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm z-10">
-                <div className="h-16 flex items-center px-6 border-b border-gray-200">
-                  <div className="font-bold text-lg text-[#EE4D2D]">Workspace<span className="text-[#101C2C]">Admin</span></div>
+              {/* Sidebar */}
+              <div className="w-64 bg-white border-r border-slate-200 flex flex-col shadow-sm z-10">
+                <div className="h-16 flex items-center justify-center border-b border-slate-200">
+                  <div className="font-display font-black text-xl text-brand-navy">ADMIN<span className="text-brand-orange">PANEL</span></div>
                 </div>
-                <div className="flex-1 overflow-y-auto py-4">
-                  <div className="px-6 mb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Content Management</div>
-                  <nav className="space-y-1">
-                    {[
-                      { id: 'Hero', icon: <IconDashboard />, label: 'Hero Section' },
-                      { id: 'About', icon: <IconFileText />, label: 'About & Info' },
-                      { id: 'EduOrg', icon: <IconAcademic />, label: 'Edu & Org' },
-                      { id: 'Experience', icon: <IconBriefcase />, label: 'Experiences' },
-                      { id: 'Projects', icon: <IconEdit />, label: 'Manage Projects' },
-                    ].map((item) => (
-                      <button key={item.id} onClick={() => { setActiveTab(item.id); setEditingItem(null); }}
-                        className={`w-full flex items-center px-6 py-3 transition-colors ${activeTab === item.id ? 'bg-[#EE4D2D]/10 text-[#EE4D2D] border-r-4 border-[#EE4D2D]' : 'text-gray-600 hover:bg-gray-50'}`}>
-                        <span className="mr-3">{item.icon}</span>{item.label}
-                      </button>
-                    ))}
-                  </nav>
+                <div className="flex-1 overflow-y-auto py-6 space-y-1">
+                  {['Hero', 'Experience', 'Projects', 'Contact'].map((tab) => (
+                    <button key={tab} onClick={() => { setActiveTab(tab); setEditingItem(null); }}
+                      className={`w-full flex items-center px-6 py-3 font-bold transition-colors ${activeTab === tab ? 'bg-brand-orange/10 text-brand-orange border-r-4 border-brand-orange' : 'text-slate-500 hover:bg-slate-50'}`}>
+                      <i className={`fa-solid fa-${tab === 'Hero' ? 'user' : tab === 'Experience' ? 'briefcase' : tab === 'Projects' ? 'boxes-stacked' : 'envelope'} w-6`}></i> {tab} Section
+                    </button>
+                  ))}
                 </div>
-                <div className="p-4 border-t border-gray-200">
-                  <button onClick={() => setView('public')} className="w-full py-2 text-center text-[#64748B] bg-gray-100 hover:bg-gray-200 rounded font-medium transition-colors">Exit to Website</button>
+                <div className="p-4 border-t border-slate-200">
+                  <button onClick={() => setView('public')} className="w-full py-2.5 text-center text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg font-bold font-mono text-xs transition-colors">EXIT TO WEBSITE</button>
                 </div>
               </div>
 
+              {/* Main Content */}
               <div className="flex-1 flex flex-col overflow-hidden">
-                <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shadow-sm z-0">
-                  <h1 className="text-xl font-bold text-gray-800">Editor Panel</h1>
-                  <div className="flex space-x-4">
-                    <button onClick={() => setFormData(data)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 font-medium">Discard Changes</button>
-                    <button onClick={handleSave} className="px-6 py-2 bg-[#EE4D2D] text-white rounded hover:bg-[#D74325] font-medium shadow-md shadow-[#EE4D2D]/20 transition-all">Save & Publish</button>
-                  </div>
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm">
+                  <h1 className="text-lg font-bold text-brand-navy font-display uppercase">{activeTab} Editor</h1>
+                  <button onClick={handleSave} className="px-6 py-2 bg-brand-orange text-white rounded-lg hover:bg-brand-orangeDark font-bold font-mono text-xs shadow-md transition-all">SAVE & PUBLISH</button>
                 </header>
 
                 <main className="flex-1 overflow-y-auto p-8">
-                  <div className="bg-white rounded border border-gray-200 shadow-sm max-w-4xl">
+                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm max-w-4xl p-8">
+                    
                     {activeTab === 'Hero' && (
-                      <div className="p-8 space-y-6">
+                      <div className="space-y-8">
                         <div className="grid grid-cols-2 gap-6">
-                          <div className="space-y-2"><label className="block font-medium text-gray-700">Nama Lengkap</label><input type="text" value={formData.hero.name} onChange={(e) => handleNestedChange('hero', 'name', e.target.value)} className="w-full px-4 py-2 border rounded outline-none focus:border-[#EE4D2D]" /></div>
-                          <div className="space-y-2"><label className="block font-medium text-gray-700">Headline</label><input type="text" value={formData.hero.headline} onChange={(e) => handleNestedChange('hero', 'headline', e.target.value)} className="w-full px-4 py-2 border rounded outline-none focus:border-[#EE4D2D]" /></div>
+                            <div className="space-y-2"><label className="font-bold text-slate-700">Nama (Logo K.)</label><input type="text" value={formData.hero.name} onChange={e => handleNestedChange('hero', 'name', e.target.value)} className="w-full border p-2.5 rounded bg-slate-50" /></div>
+                            <div className="space-y-2"><label className="font-bold text-slate-700">Salam Pembuka</label><input type="text" value={formData.hero.greeting} onChange={e => handleNestedChange('hero', 'greeting', e.target.value)} className="w-full border p-2.5 rounded bg-slate-50" /></div>
+                            <div className="space-y-2"><label className="font-bold text-slate-700">Role Utama</label><input type="text" value={formData.hero.role} onChange={e => handleNestedChange('hero', 'role', e.target.value)} className="w-full border p-2.5 rounded bg-slate-50" /></div>
+                            <div className="space-y-2"><label className="font-bold text-slate-700">Sub Role</label><input type="text" value={formData.hero.subRole} onChange={e => handleNestedChange('hero', 'subRole', e.target.value)} className="w-full border p-2.5 rounded bg-slate-50" /></div>
                         </div>
-                        <div className="space-y-2"><label className="block font-medium text-gray-700">Deskripsi Singkat</label><textarea rows="3" value={formData.hero.description} onChange={(e) => handleNestedChange('hero', 'description', e.target.value)} className="w-full px-4 py-2 border rounded outline-none focus:border-[#EE4D2D]"></textarea></div>
-                        <div className="grid grid-cols-2 gap-6">
-                          <div className="space-y-2"><label className="block font-medium text-gray-700">Location</label><input type="text" value={formData.hero.location} onChange={(e) => handleNestedChange('hero', 'location', e.target.value)} className="w-full px-4 py-2 border rounded outline-none" /></div>
-                          <div className="space-y-2"><label className="block font-medium text-gray-700">Email</label><input type="text" value={formData.hero.email} onChange={(e) => handleNestedChange('hero', 'email', e.target.value)} className="w-full px-4 py-2 border rounded outline-none" /></div>
+                        <div className="space-y-2">
+                            <label className="font-bold text-slate-700">Deskripsi Paragraf</label>
+                            <textarea rows="3" value={formData.hero.description} onChange={e => handleNestedChange('hero', 'description', e.target.value)} className="w-full border p-2.5 rounded bg-slate-50"></textarea>
                         </div>
-
-                        {/* FITUR BARU: PENGATURAN FOTO HERO */}
-                        <div className="mt-8 pt-6 border-t border-gray-200">
-                          <h3 className="font-bold text-gray-800 mb-4">Pengaturan Foto Utama (Hero Image)</h3>
-                          <div className="grid md:grid-cols-2 gap-8">
-                            <div className="space-y-4">
-                              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded cursor-pointer bg-gray-50 hover:bg-gray-100">
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6 text-gray-500">
-                                  <IconUpload />
-                                  <p className="mt-2 text-sm font-semibold">Upload Foto Baru (JPG/PNG)</p>
-                                  <p className="text-xs">Otomatis dikompres</p>
-                                </div>
-                                <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={(e) => {
-                                  const file = e.target.files[0];
-                                  if (file) compressImage(file, (base64) => handleNestedChange('hero', 'photoUrl', base64));
-                                }} />
-                              </label>
-                              
-                              <div className="space-y-1">
-                                <label className="block text-xs font-bold text-gray-500">Direct Link Foto (URL)</label>
-                                <input type="text" value={formData.hero.photoUrl} onChange={(e) => handleNestedChange('hero', 'photoUrl', e.target.value)} className="w-full px-3 py-2 border rounded outline-none text-xs" />
-                              </div>
-
-                              <div className="space-y-4 pt-4 border-t border-gray-100">
-                                <div>
-                                  <label className="text-xs font-bold text-gray-500 flex justify-between">Zoom <span>{formData.hero.photoSettings?.zoom || 100}%</span></label>
-                                  <input type="range" min="100" max="250" value={formData.hero.photoSettings?.zoom || 100} onChange={e => setFormData({...formData, hero: {...formData.hero, photoSettings: {...(formData.hero.photoSettings || {zoom:100, posX:50, posY:50}), zoom: e.target.value}}})} className="w-full" />
-                                </div>
-                                <div>
-                                  <label className="text-xs font-bold text-gray-500 flex justify-between">Geser Kiri/Kanan (Posisi X) <span>{formData.hero.photoSettings?.posX || 50}%</span></label>
-                                  <input type="range" min="0" max="100" value={formData.hero.photoSettings?.posX || 50} onChange={e => setFormData({...formData, hero: {...formData.hero, photoSettings: {...(formData.hero.photoSettings || {zoom:100, posX:50, posY:50}), posX: e.target.value}}})} className="w-full" />
-                                </div>
-                                <div>
-                                  <label className="text-xs font-bold text-gray-500 flex justify-between">Geser Atas/Bawah (Posisi Y) <span>{formData.hero.photoSettings?.posY || 50}%</span></label>
-                                  <input type="range" min="0" max="100" value={formData.hero.photoSettings?.posY || 50} onChange={e => setFormData({...formData, hero: {...formData.hero, photoSettings: {...(formData.hero.photoSettings || {zoom:100, posX:50, posY:50}), posY: e.target.value}}})} className="w-full" />
-                                </div>
-                              </div>
+                        
+                        {/* 4 Stats Editor */}
+                        <div className="pt-6 border-t">
+                            <h3 className="font-bold text-brand-navy font-display mb-4">Edit 4 Pencapaian (Stats)</h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                {formData.hero.stats.map((stat, idx) => (
+                                    <div key={stat.id} className="p-4 bg-slate-50 border rounded-lg flex gap-3">
+                                        <div className="w-1/3 space-y-1">
+                                            <label className="text-xs font-bold text-slate-500">Angka</label>
+                                            <input type="text" value={stat.val} onChange={e => handleStatChange(stat.id, 'val', e.target.value)} className="w-full border p-2 rounded text-brand-orange font-bold text-center" />
+                                        </div>
+                                        <div className="w-2/3 space-y-1">
+                                            <label className="text-xs font-bold text-slate-500">Label Text</label>
+                                            <input type="text" value={stat.label} onChange={e => handleStatChange(stat.id, 'label', e.target.value)} className="w-full border p-2 rounded uppercase text-xs" />
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                            
-                            {/* Live Preview Kotak Foto */}
-                            <div className="flex justify-center items-center bg-gray-100 rounded border p-4">
-                                <div className="w-48 h-[256px] overflow-hidden rounded shadow-lg bg-white relative">
-                                    <img 
-                                      src={formData.hero.photoUrl} 
-                                      alt="Preview" 
-                                      className="w-full h-full object-cover" 
-                                      style={{ 
-                                        objectPosition: `${formData.hero.photoSettings?.posX || 50}% ${formData.hero.photoSettings?.posY || 50}%`, 
-                                        transform: `scale(${(formData.hero.photoSettings?.zoom || 100) / 100})` 
-                                      }} 
+                        </div>
+
+                        {/* Photo Settings */}
+                        <div className="pt-6 border-t grid grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                                <h3 className="font-bold text-brand-navy font-display">Foto Utama (Hero)</h3>
+                                <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer bg-slate-50 hover:bg-slate-100">
+                                    <div className="text-center text-slate-500"><i className="fa-solid fa-cloud-arrow-up"></i><p className="text-xs font-bold mt-1">Upload JPG/PNG</p></div>
+                                    <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={e => {
+                                        const file = e.target.files[0];
+                                        if (file) compressImage(file, (base64) => handleNestedChange('hero', 'photoUrl', base64));
+                                    }} />
+                                </label>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-slate-500 flex justify-between">Zoom <span>{formData.hero.photoSettings?.zoom || 100}%</span></label>
+                                    <input type="range" min="100" max="250" value={formData.hero.photoSettings?.zoom || 100} onChange={e => setFormData({...formData, hero: {...formData.hero, photoSettings: {...(formData.hero.photoSettings || {zoom:100, posX:50, posY:50}), zoom: e.target.value}}})} className="w-full" />
+                                </div>
+                            </div>
+                            <div className="flex justify-center items-center">
+                                <div className="w-48 aspect-[4/5] rounded-[2rem] bg-brand-navy border-4 border-slate-200 overflow-hidden relative">
+                                    <img src={formData.hero.photoUrl} alt="Preview" className="w-full h-full object-cover" 
+                                      style={{ objectPosition: `${formData.hero.photoSettings?.posX || 50}% ${formData.hero.photoSettings?.posY || 50}%`, transform: `scale(${(formData.hero.photoSettings?.zoom || 100) / 100})` }} 
                                     />
                                 </div>
                             </div>
-                          </div>
                         </div>
-
-                      </div>
-                    )}
-
-                    {activeTab === 'About' && (
-                      <div className="p-8 space-y-6">
-                        <div className="space-y-2">
-                          <label className="block font-medium text-gray-700">Professional Summary (About Me)</label>
-                          <textarea rows="4" value={formData.about.summary} onChange={(e) => handleNestedChange('about', 'summary', e.target.value)} className="w-full px-4 py-2 border rounded outline-none focus:border-[#EE4D2D]"></textarea>
-                        </div>
-                        <div className="space-y-2">
-                          <label className="block font-medium text-gray-700">Education Details</label>
-                          <input type="text" value={formData.about.education} onChange={(e) => handleNestedChange('about', 'education', e.target.value)} className="w-full px-4 py-2 border rounded outline-none focus:border-[#EE4D2D]" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="block font-medium text-gray-700">Career Focus Areas</label>
-                          <input type="text" value={formData.about.focus} onChange={(e) => handleNestedChange('about', 'focus', e.target.value)} className="w-full px-4 py-2 border rounded outline-none focus:border-[#EE4D2D]" />
-                        </div>
-                      </div>
-                    )}
-
-                    {activeTab === 'EduOrg' && (
-                      <div className="p-8 space-y-12">
-                        
-                        {/* Educations */}
-                        <div>
-                          <h3 className="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Riwayat Pendidikan</h3>
-                          {editingItem?.type === 'edu' ? (
-                             <EduOrgEditor 
-                                title="Education"
-                                item={editingItem.id === 'new' ? null : formData.educations?.find(e => e.id === editingItem.id)}
-                                onCancel={() => setEditingItem(null)}
-                                onSave={(newEdu) => {
-                                  const newArray = editingItem.id === 'new' ? [...(formData.educations||[]), newEdu] : formData.educations.map(e => e.id === newEdu.id ? newEdu : e);
-                                  setFormData({...formData, educations: newArray});
-                                  setEditingItem(null);
-                                }}
-                             />
-                          ) : (
-                            <div className="space-y-4">
-                              <button onClick={() => setEditingItem({type: 'edu', id: 'new'})} className="mb-2 px-4 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded font-medium">+ Add New Education</button>
-                              {(formData.educations || []).map((edu) => (
-                                <div key={edu.id} className="flex justify-between items-center p-4 border rounded bg-gray-50">
-                                  <div className="flex items-center gap-4">
-                                    {edu.logo && <img src={edu.logo} className="w-10 h-10 rounded object-contain border p-1 bg-white" alt="" />}
-                                    <div><div className="font-bold">{edu.name}</div><div className="text-sm text-gray-500">{edu.role} • {edu.period}</div></div>
-                                  </div>
-                                  <div className="space-x-2">
-                                    <button onClick={() => setEditingItem({type: 'edu', id: edu.id})} className="px-3 py-1 bg-white border rounded">Edit</button>
-                                    <button onClick={() => setFormData({...formData, educations: formData.educations.filter(e => e.id !== edu.id)})} className="px-3 py-1 bg-red-50 text-red-500 border rounded">Delete</button>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Organizations */}
-                        <div>
-                          <h3 className="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Pengalaman Organisasi</h3>
-                          {editingItem?.type === 'org' ? (
-                             <EduOrgEditor 
-                                title="Organization"
-                                item={editingItem.id === 'new' ? null : formData.organizations?.find(e => e.id === editingItem.id)}
-                                onCancel={() => setEditingItem(null)}
-                                onSave={(newOrg) => {
-                                  const newArray = editingItem.id === 'new' ? [...(formData.organizations||[]), newOrg] : formData.organizations.map(e => e.id === newOrg.id ? newOrg : e);
-                                  setFormData({...formData, organizations: newArray});
-                                  setEditingItem(null);
-                                }}
-                             />
-                          ) : (
-                            <div className="space-y-4">
-                              <button onClick={() => setEditingItem({type: 'org', id: 'new'})} className="mb-2 px-4 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded font-medium">+ Add New Organization</button>
-                              {(formData.organizations || []).map((org) => (
-                                <div key={org.id} className="flex justify-between items-center p-4 border rounded bg-gray-50">
-                                  <div className="flex items-center gap-4">
-                                    {org.logo && <img src={org.logo} className="w-10 h-10 rounded object-contain border p-1 bg-white" alt="" />}
-                                    <div><div className="font-bold">{org.name}</div><div className="text-sm text-gray-500">{org.role} • {org.period}</div></div>
-                                  </div>
-                                  <div className="space-x-2">
-                                    <button onClick={() => setEditingItem({type: 'org', id: org.id})} className="px-3 py-1 bg-white border rounded">Edit</button>
-                                    <button onClick={() => setFormData({...formData, organizations: formData.organizations.filter(e => e.id !== org.id)})} className="px-3 py-1 bg-red-50 text-red-500 border rounded">Delete</button>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {activeTab === 'Experience' && (
-                      <div className="p-8">
-                        {editingItem?.type === 'exp' ? (
-                           <ExperienceEditor 
-                              exp={editingItem.id === 'new' ? null : formData.experience.find(e => e.id === editingItem.id)}
-                              onCancel={() => setEditingItem(null)}
-                              onSave={(newExp) => {
-                                const newArray = editingItem.id === 'new' ? [...(formData.experience||[]), newExp] : formData.experience.map(e => e.id === newExp.id ? newExp : e);
-                                setFormData({...formData, experience: newArray});
-                                setEditingItem(null);
-                              }}
-                           />
-                        ) : (
-                          <div className="space-y-4">
-                            <button onClick={() => setEditingItem({type: 'exp', id: 'new'})} className="mb-4 px-4 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded font-medium">+ Add New Experience</button>
-                            {(formData.experience || []).map((exp) => (
-                              <div key={exp.id} className="flex justify-between items-center p-4 border rounded bg-gray-50">
-                                <div className="flex items-center gap-4">
-                                  {exp.logo && <img src={exp.logo} className="w-10 h-10 rounded object-contain border p-1 bg-white" alt="" />}
-                                  <div><div className="font-bold">{exp.role}</div><div className="text-sm text-gray-500">{exp.company} • {exp.period}</div></div>
-                                </div>
-                                <div className="space-x-2">
-                                  <button onClick={() => setEditingItem({type: 'exp', id: exp.id})} className="px-3 py-1 bg-white border rounded">Edit</button>
-                                  <button onClick={() => setFormData({...formData, experience: formData.experience.filter(e => e.id !== exp.id)})} className="px-3 py-1 bg-red-50 text-red-500 border rounded">Delete</button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     )}
 
                     {activeTab === 'Projects' && (
-                      <div className="p-8">
-                        {editingItem?.type === 'proj' ? (
-                           <ProjectEditor 
-                              project={editingItem.id === 'new' ? null : formData.projects.find(p => p.id === editingItem.id)}
-                              onCancel={() => setEditingItem(null)}
-                              onSave={(newProj) => {
-                                const newArray = editingItem.id === 'new' ? [...(formData.projects||[]), newProj] : formData.projects.map(p => p.id === newProj.id ? newProj : p);
-                                setFormData({...formData, projects: newArray});
-                                setEditingItem(null);
-                              }}
-                           />
-                        ) : (
-                          <div className="space-y-4">
-                            <button onClick={() => setEditingItem({type: 'proj', id: 'new'})} className="mb-4 px-4 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded font-medium">+ Add New Project</button>
-                            {(formData.projects || []).map((proj) => (
-                              <div key={proj.id} className="flex justify-between items-center p-4 border rounded bg-gray-50">
-                                <div className="flex items-center gap-4">
-                                  {proj.cover && <img src={proj.cover} className="w-12 h-12 rounded object-cover border" alt="" />}
-                                  <div><div className="font-bold">{proj.title}</div><div className="text-xs text-gray-500">{proj.category}</div></div>
+                        <div>
+                            {editingItem?.type === 'proj' ? (
+                                <ProjectEditor 
+                                    project={editingItem.id === 'new' ? null : formData.projects.find(p => p.id === editingItem.id)}
+                                    onCancel={() => setEditingItem(null)}
+                                    onSave={(newProj) => {
+                                        const newArray = editingItem.id === 'new' ? [...(formData.projects||[]), newProj] : formData.projects.map(p => p.id === newProj.id ? newProj : p);
+                                        setFormData({...formData, projects: newArray});
+                                        setEditingItem(null);
+                                    }}
+                                />
+                            ) : (
+                                <div className="space-y-4">
+                                    <button onClick={() => setEditingItem({type: 'proj', id: 'new'})} className="mb-4 px-4 py-2.5 bg-slate-100 text-brand-navy font-bold rounded-lg font-mono text-xs hover:bg-slate-200 border border-slate-200">+ TAMBAH PROYEK BARU</button>
+                                    {(formData.projects || []).map((proj) => (
+                                        <div key={proj.id} className="flex justify-between items-center p-4 border rounded-xl bg-slate-50">
+                                            <div><div className="font-bold text-brand-navy">{proj.title}</div><div className="text-xs text-slate-500 font-mono mt-1">{proj.category}</div></div>
+                                            <div className="space-x-2 flex">
+                                                <button onClick={() => setEditingItem({type: 'proj', id: proj.id})} className="px-3 py-1.5 bg-white border rounded shadow-sm text-xs font-bold text-slate-700 hover:text-brand-orange"><i className="fa-solid fa-pen"></i> Edit</button>
+                                                <button onClick={() => setFormData({...formData, projects: formData.projects.filter(p => p.id !== proj.id)})} className="px-3 py-1.5 bg-white border rounded shadow-sm text-xs font-bold text-red-500 hover:bg-red-50"><i className="fa-solid fa-trash"></i></button>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                                <div className="space-x-2">
-                                  <button onClick={() => setEditingItem({type: 'proj', id: proj.id})} className="px-3 py-1 bg-white border rounded">Edit</button>
-                                  <button onClick={() => setFormData({...formData, projects: formData.projects.filter(p => p.id !== proj.id)})} className="px-3 py-1 bg-red-50 text-red-500 border rounded">Delete</button>
+                            )}
+                        </div>
+                    )}
+
+                    {activeTab === 'Experience' && (
+                        <div>
+                            {editingItem?.type === 'exp' ? (
+                                <ExperienceEditor 
+                                    exp={editingItem.id === 'new' ? null : formData.experience.find(e => e.id === editingItem.id)}
+                                    onCancel={() => setEditingItem(null)}
+                                    onSave={(newExp) => {
+                                        const newArray = editingItem.id === 'new' ? [...(formData.experience||[]), newExp] : formData.experience.map(e => e.id === newExp.id ? newExp : e);
+                                        setFormData({...formData, experience: newArray});
+                                        setEditingItem(null);
+                                    }}
+                                />
+                            ) : (
+                                <div className="space-y-4">
+                                    <button onClick={() => setEditingItem({type: 'exp', id: 'new'})} className="mb-4 px-4 py-2.5 bg-slate-100 text-brand-navy font-bold rounded-lg font-mono text-xs hover:bg-slate-200 border border-slate-200">+ TAMBAH PENGALAMAN</button>
+                                    {(formData.experience || []).map((exp) => (
+                                        <div key={exp.id} className="flex justify-between items-center p-4 border rounded-xl bg-slate-50">
+                                            <div><div className="font-bold text-brand-navy">{exp.role}</div><div className="text-xs text-slate-500 mt-1">{exp.company} • {exp.period}</div></div>
+                                            <div className="space-x-2 flex">
+                                                <button onClick={() => setEditingItem({type: 'exp', id: exp.id})} className="px-3 py-1.5 bg-white border rounded shadow-sm text-xs font-bold text-slate-700 hover:text-brand-orange"><i className="fa-solid fa-pen"></i> Edit</button>
+                                                <button onClick={() => setFormData({...formData, experience: formData.experience.filter(e => e.id !== exp.id)})} className="px-3 py-1.5 bg-white border rounded shadow-sm text-xs font-bold text-red-500 hover:bg-red-50"><i className="fa-solid fa-trash"></i></button>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                            )}
+                        </div>
+                    )}
+
+                    {activeTab === 'Contact' && (
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2"><label className="font-bold text-slate-700">Email Utama</label><input type="email" value={formData.hero.email} onChange={e => handleNestedChange('hero', 'email', e.target.value)} className="w-full border p-2.5 rounded bg-slate-50" /></div>
+                                <div className="space-y-2"><label className="font-bold text-slate-700">Nomor HP</label><input type="text" value={formData.hero.phone} onChange={e => handleNestedChange('hero', 'phone', e.target.value)} className="w-full border p-2.5 rounded bg-slate-50" /></div>
+                                <div className="space-y-2 col-span-2"><label className="font-bold text-slate-700">Alamat / Lokasi</label><input type="text" value={formData.hero.location} onChange={e => handleNestedChange('hero', 'location', e.target.value)} className="w-full border p-2.5 rounded bg-slate-50" /></div>
+                            </div>
+                        </div>
                     )}
                   </div>
                 </main>
@@ -579,10 +445,11 @@
         };
 
         // ==========================================
-        // SEGMENT 5: PUBLIC PORTFOLIO (NO NAV, SEAMLESS)
+        // SEGMENT 5: PUBLIC PORTFOLIO (NEW UI/UX)
         // ==========================================
         const PublicPortfolio = ({ data, setView }) => {
           const [activeProject, setActiveProject] = useState(null);
+          const [showResume, setShowResume] = useState(false);
 
           // P + L shortcut to open Admin
           useEffect(() => {
@@ -593,354 +460,406 @@
             return () => { window.removeEventListener('keydown', down); window.removeEventListener('keyup', up); };
           }, [setView]);
 
-          // Filter proyek independen (yang belum diikat ke experience tertentu)
-          const independentProjects = data?.projects?.filter(p => !p.experienceId) || [];
+          const renderList = (text) => {
+              if(!text) return null;
+              return text.split('\n').map((line, i) => <li key={i} className="mb-1">{line.replace('• ', '')}</li>);
+          };
 
           return (
-            <div className="font-sans text-slate-800 bg-slate-50 min-h-screen pb-20 selection:bg-blue-500 selection:text-white">
+            <div className="font-sans">
               
-              {/* 1. HERO SECTION */}
-              <section className="bg-slate-900 text-white pt-32 pb-24 px-6 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-400 via-transparent to-transparent"></div>
-                <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16 relative z-10">
-                  <div className="flex-1 text-center md:text-left">
-                    <h2 className="text-blue-400 font-semibold tracking-widest uppercase mb-4 text-sm bg-blue-900/30 inline-block px-4 py-1.5 rounded-full border border-blue-800/50">
-                      Fresh Graduate of Industrial Engineering
-                    </h2>
-                    <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">
-                      {data?.hero?.name || "Kurniawan H."}
-                    </h1>
-                    <p className="text-2xl text-slate-300 font-light mb-10 max-w-2xl leading-relaxed">
-                      {data?.hero?.headline || "Industrial & Manufacturing Engineer"}
-                    </p>
-                    <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                      <a href={`mailto:${data?.hero?.email || ''}`} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3.5 rounded-full font-medium transition-all shadow-lg shadow-blue-900/20 flex items-center gap-2">
-                        <IconMail /> Contact Me
+              {/* Navigation Header */}
+              <header className="sticky top-0 z-40 w-full bg-brand-bg/90 backdrop-blur-md border-b border-slate-300/60">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                      <a href="#" className="flex items-center gap-3 group">
+                          <div className="w-10 h-10 rounded-full bg-brand-navy flex items-center justify-center text-white font-display font-black text-xl group-hover:bg-brand-orange transition-colors duration-300">
+                              {data.hero.name.charAt(0)}
+                          </div>
+                          <div className="flex flex-col">
+                              <span className="font-extrabold text-brand-navy text-sm tracking-tight font-display leading-tight">{data.hero.role}</span>
+                              <span className="text-[10px] font-mono text-brand-orange font-bold uppercase tracking-widest">{data.hero.subRole}</span>
+                          </div>
                       </a>
-                      <div className="px-8 py-3.5 rounded-full font-medium border border-slate-700 text-slate-300 flex items-center gap-2 bg-slate-800/50">
-                        <IconMapPin /> {data?.hero?.location || "Tuban, Jawa Timur"}
+                      <nav className="hidden md:flex items-center gap-6 font-mono text-xs font-bold text-slate-700 uppercase">
+                          <a href="#projects" className="hover:text-brand-orange transition-colors">Projects</a>
+                          <a href="#skills" className="hover:text-brand-orange transition-colors">Skills</a>
+                          <a href="#experience" className="hover:text-brand-orange transition-colors">Pengalaman</a>
+                          <a href="#education" className="hover:text-brand-orange transition-colors">Pendidikan</a>
+                      </nav>
+                      <div className="flex items-center gap-4">
+                          <a href="#contact" className="hidden sm:flex px-5 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-orange text-white font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-sm">
+                              Let's Talk
+                          </a>
                       </div>
-                    </div>
                   </div>
-                  {data?.hero?.photoUrl && (
-                    <div className="w-64 h-80 md:w-80 md:h-[26rem] flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl border-4 border-slate-800 relative group">
-                      <img 
-                        src={data.hero.photoUrl} 
-                        alt="Profile" 
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        style={{ 
-                          transform: `scale(${(data.hero.photoSettings?.zoom || 100)/100}) translate(${data.hero.photoSettings?.posX ? data.hero.photoSettings.posX - 50 : 0}%, ${data.hero.photoSettings?.posY ? data.hero.photoSettings.posY - 50 : 0}%)` 
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-              </section>
+              </header>
 
-              {/* 2. ABOUT & SUMMARY */}
-              <section className="py-24 px-6 bg-white border-b border-slate-100">
-                <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
-                  <div className="lg:w-1/3">
-                    <h3 className="text-3xl font-bold mb-4 text-slate-800">About Me</h3>
-                    <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-8"></div>
-                  </div>
-                  <div className="lg:w-2/3">
-                    <p className="text-lg text-slate-600 leading-relaxed font-light whitespace-pre-wrap">
-                      {data?.about?.summary || "Lulusan S1 Teknik Industri dengan fokus pada process improvement..."}
-                    </p>
-                  </div>
-                </div>
-              </section>
-
-              {/* 3. EDUCATION & ORGANIZATION (Static Mockup ready for data) */}
-              <section className="py-24 px-6 bg-slate-50 border-b border-slate-100">
-                <div className="max-w-6xl mx-auto">
-                  <h3 className="text-3xl font-bold mb-4 text-slate-800 text-center">Riwayat Pendidikan & Organisasi</h3>
-                  <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-16 mx-auto"></div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-                    
-                    {/* Render Educations */}
-                    {(data?.educations || []).map((edu) => (
-                      <div key={edu.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                        <div className="flex gap-6 items-start">
-                          {edu.logo ? (
-                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 border border-slate-100 p-1 overflow-hidden">
-                              <img src={edu.logo} alt={edu.name} className="w-full h-full object-contain" />
-                            </div>
-                          ) : (
-                            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 font-bold">
-                              {edu.name.charAt(0)}
-                            </div>
-                          )}
-                          <div>
-                            <h4 className="text-xl font-bold text-slate-800">{edu.name}</h4>
-                            <p className="text-blue-600 font-medium mt-1">{edu.role}</p>
-                            <p className="text-slate-500 text-sm mt-2 font-medium">{edu.period}</p>
-                            {edu.info && <p className="text-slate-600 mt-3 bg-slate-50 inline-block px-3 py-1 rounded-lg text-sm font-medium border border-slate-100">{edu.info}</p>}
-                          </div>
-                        </div>
+              {/* HERO SECTION */}
+              <section className="pt-8 pb-16 md:pt-12 md:pb-20 overflow-hidden">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                      <div className="mb-10 animate-fade-in-up">
+                          <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[100px] font-display font-black tracking-tighter uppercase leading-[0.88] text-brand-navy">
+                              <span className="text-brand-orange block">{data.hero.title1 || 'ENGINEERING'}</span>
+                              <span>{data.hero.title2 || 'PORTFOLIO'}</span>
+                          </h1>
                       </div>
-                    ))}
-                    
-                    {/* Render Organizations */}
-                    {(data?.organizations || []).map((org) => (
-                      <div key={org.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                        <div className="flex gap-6 items-start">
-                          {org.logo ? (
-                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 border border-slate-100 p-1 overflow-hidden">
-                              <img src={org.logo} alt={org.name} className="w-full h-full object-contain" />
-                            </div>
-                          ) : (
-                            <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 font-bold">
-                              {org.name.charAt(0)}
-                            </div>
-                          )}
-                          <div>
-                            <h4 className="text-xl font-bold text-slate-800">{org.name}</h4>
-                            <p className="text-emerald-600 font-medium mt-1">{org.role}</p>
-                            <p className="text-slate-500 text-sm mt-2 font-medium">{org.period}</p>
-                            {org.info && <p className="text-slate-600 mt-3 bg-slate-50 inline-block px-3 py-1 rounded-lg text-sm font-medium border border-slate-100">{org.info}</p>}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
 
-                  </div>
-                </div>
-              </section>
-
-              {/* 4. EXPERIENCES & INTEGRATED PROJECTS */}
-              <section className="py-24 px-6 bg-white">
-                <div className="max-w-6xl mx-auto">
-                  <h3 className="text-3xl font-bold mb-4 text-slate-800">Pengalaman Profesional</h3>
-                  <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-16"></div>
-
-                  <div className="space-y-20">
-                    {data?.experience?.map((exp) => {
-                      const relatedProjects = data?.projects?.filter(p => p.experienceId === exp.id) || [];
-                      
-                      return (
-                        <div key={exp.id} className="relative pl-0 md:pl-12">
-                          <div className="hidden md:block absolute left-0 top-0 bottom-0 w-px bg-slate-200"></div>
-                          <div className="hidden md:block absolute left-[-5px] top-10 w-3 h-3 rounded-full bg-blue-600 border-4 border-blue-100"></div>
-
-                          {/* Experience Header */}
-                          <div className="flex flex-col md:flex-row gap-8 items-start mb-10">
-                            {exp.logo ? (
-                              <div className="w-20 h-20 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center overflow-hidden flex-shrink-0 p-2">
-                                <img src={exp.logo} alt={exp.company} className="w-full h-full object-contain" />
-                              </div>
-                            ) : (
-                              <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-slate-50 text-blue-600 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-3xl font-bold flex-shrink-0">
-                                {exp.company?.charAt(0) || 'C'}
-                              </div>
-                            )}
-                            
-                            <div className="flex-1">
-                              <h4 className="text-2xl font-bold text-slate-800">{exp.role}</h4>
-                              <h5 className="text-lg text-blue-600 font-medium mt-1">{exp.company}</h5>
-                              <div className="flex flex-wrap gap-3 mt-4 text-sm font-medium text-slate-500">
-                                <span className="bg-slate-100 px-3 py-1 rounded-md">{exp.period}</span>
-                                <span className="bg-slate-100 px-3 py-1 rounded-md">{exp.location}</span>
-                                {exp.department && <span className="bg-slate-100 px-3 py-1 rounded-md">{exp.department}</span>}
-                              </div>
-                              <p className="mt-6 text-slate-600 leading-relaxed font-light whitespace-pre-wrap">{exp.description}</p>
-                            </div>
-                          </div>
-
-                          {/* Related Projects Grid */}
-                          {relatedProjects.length > 0 && (
-                            <div className="mt-10 md:ml-28">
-                              <h6 className="text-xs font-bold tracking-widest text-slate-400 uppercase mb-6 flex items-center gap-4">
-                                <span>Related Projects</span>
-                                <div className="h-px bg-slate-200 flex-1"></div>
-                              </h6>
-                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {relatedProjects.map(proj => (
-                                  <div 
-                                    key={proj.id} 
-                                    onClick={() => setActiveProject(proj)}
-                                    className="group bg-white rounded-2xl p-1 border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all cursor-pointer overflow-hidden"
-                                  >
-                                    {proj.cover && (
-                                      <div className="h-48 w-full rounded-xl overflow-hidden mb-1 relative bg-slate-100">
-                                        <div className="absolute inset-0 bg-blue-900/10 group-hover:bg-transparent transition-colors z-10"></div>
-                                        <img src={proj.cover} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                                      </div>
-                                    )}
-                                    <div className="p-6">
-                                      <span className="text-[10px] font-bold text-blue-600 tracking-widest uppercase mb-2 block">{proj.category || 'Project'}</span>
-                                      <h5 className="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors line-clamp-1">{proj.title}</h5>
-                                      <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed">{proj.summary}</p>
-                                    </div>
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                          {/* Left Column */}
+                          <div className="lg:col-span-7 space-y-8 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                              <div className="space-y-3">
+                                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-200/80 text-brand-navy font-mono text-xs font-bold uppercase border border-slate-300">
+                                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                      Available for Projects
                                   </div>
-                                ))}
+                                  <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-navy tracking-tight font-display">
+                                      {data.hero.greeting}
+                                  </h2>
+                                  <p className="text-slate-700 text-base sm:text-lg leading-relaxed max-w-xl font-normal whitespace-pre-wrap">
+                                      {data.hero.description}
+                                  </p>
                               </div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
 
-                  {/* Independent Projects */}
-                  {independentProjects.length > 0 && (
-                    <div className="mt-24">
-                      <h3 className="text-2xl font-bold mb-8 text-slate-800 flex items-center gap-4">
-                        <span>Proyek & Portofolio</span>
-                        <div className="h-px bg-slate-200 flex-1"></div>
-                      </h3>
+                              {/* STATS ROW */}
+                              <div className="p-6 bg-white rounded-2xl border border-slate-300/80 shadow-sm relative">
+                                  <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-200">
+                                      <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-slate-500">
+                                          <i className="fa-solid fa-chart-line text-brand-orange mr-1.5"></i> METRIK & PENCAPAIAN
+                                      </span>
+                                  </div>
+                                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                                      {data.hero.stats.map((stat, idx) => (
+                                          <div key={stat.id}>
+                                              <div className={`text-3xl sm:text-4xl font-display font-black ${idx % 2 === 0 ? 'text-brand-orange' : 'text-brand-navy'}`}>{stat.val}</div>
+                                              <div className="text-[11px] font-mono font-bold text-slate-600 uppercase mt-1 leading-tight">{stat.label}</div>
+                                          </div>
+                                      ))}
+                                  </div>
+                              </div>
+
+                              <div className="flex flex-wrap items-center gap-4">
+                                  <a href="#projects" className="px-7 py-3.5 rounded-xl bg-brand-navy hover:bg-brand-orange text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-2">
+                                      <span>LIHAT PORTOFOLIO</span><i className="fa-solid fa-arrow-down-long text-xs"></i>
+                                  </a>
+                                  <button onClick={() => setShowResume(true)} className="px-7 py-3.5 rounded-xl bg-white border border-slate-300 hover:border-slate-400 text-brand-navy font-bold text-xs uppercase tracking-wider transition-all shadow-sm flex items-center gap-2">
+                                      <i className="fa-solid fa-file-arrow-down text-brand-orange"></i><span>UNDUH CV</span>
+                                  </button>
+                              </div>
+                          </div>
+
+                          {/* Right Column: Photo */}
+                          <div className="lg:col-span-5 relative flex justify-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                              <div className="relative w-full max-w-md aspect-[4/5]">
+                                  <div className="absolute -right-4 -bottom-4 w-72 h-72 sm:w-80 sm:h-80 bg-brand-orange rounded-full pointer-events-none opacity-90"></div>
+                                  <div className="relative z-10 w-full h-full rounded-[2.5rem] bg-brand-navy border-4 border-white shadow-2xl overflow-hidden group">
+                                      <img src={data.hero.photoUrl} alt={data.hero.name} 
+                                          className="w-full h-full object-cover object-center filter saturate-90 contrast-105 group-hover:scale-105 transition-transform duration-700"
+                                          style={{ objectPosition: `${data.hero.photoSettings?.posX || 50}% ${data.hero.photoSettings?.posY || 50}%`, transform: `scale(${(data.hero.photoSettings?.zoom || 100) / 100})` }} 
+                                      />
+                                      <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-brand-navy/90 backdrop-blur-md border border-white/20 text-white font-mono text-xs space-y-1">
+                                          <div className="flex items-center justify-between text-slate-300">
+                                              <span className="font-bold text-brand-orange uppercase">{data.hero.name}, S.T.</span>
+                                              <span>{new Date().getFullYear()}</span>
+                                          </div>
+                                          <div className="text-[11px] text-slate-300 truncate">{data.hero.role}</div>
+                                      </div>
+                                  </div>
+                                  <div className="absolute top-6 -left-6 z-20 px-4 py-3 rounded-2xl bg-white border border-slate-300 shadow-xl hidden sm:flex items-center gap-3">
+                                      <div className="w-9 h-9 rounded-xl bg-brand-orange/10 text-brand-orange flex items-center justify-center font-bold text-base">
+                                          <i className="fa-solid fa-gear"></i>
+                                      </div>
+                                      <div className="font-mono text-xs">
+                                          <div className="font-bold text-brand-navy">SYSTEM OPTIMIZER</div>
+                                          <div className="text-slate-500 text-[10px]">Industrial & Code</div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </section>
+
+              {/* PROJECTS SECTION */}
+              <section id="projects" className="py-16 md:py-24 border-t border-slate-300/80 bg-white">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-6">
+                          <div>
+                              <div className="text-brand-orange text-xs font-mono font-bold uppercase tracking-widest mb-1">SELECTED WORK</div>
+                              <h2 className="text-3xl sm:text-4xl font-display font-black text-brand-navy tracking-tight uppercase">FEATURED PROJECTS</h2>
+                          </div>
+                      </div>
+                      
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {independentProjects.map(proj => (
-                           <div 
-                            key={proj.id} 
-                            onClick={() => setActiveProject(proj)}
-                            className="group bg-white rounded-3xl p-1 border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all cursor-pointer overflow-hidden flex flex-col"
-                           >
-                             {proj.cover && (
-                               <div className="h-48 w-full rounded-2xl overflow-hidden mb-1 relative bg-slate-100">
-                                 <div className="absolute inset-0 bg-blue-900/10 group-hover:bg-transparent transition-colors z-10"></div>
-                                 <img src={proj.cover} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                               </div>
-                             )}
-                             <div className="p-6 flex-1 flex flex-col">
-                               <span className="text-[10px] font-bold text-blue-600 tracking-widest uppercase mb-2 block">{proj.category || 'Portofolio'}</span>
-                               <h5 className="text-xl font-bold text-slate-800 mb-3 group-hover:text-blue-600 transition-colors">{proj.title}</h5>
-                               <p className="text-slate-500 text-sm line-clamp-3 leading-relaxed mb-4 flex-1">{proj.summary}</p>
-                               <div className="text-blue-600 text-sm font-bold group-hover:translate-x-1 transition-transform">
-                                 Detail Proyek &rarr;
-                               </div>
-                             </div>
-                           </div>
-                        ))}
+                          {data.projects.map((proj, idx) => (
+                              <div key={proj.id} className="bg-brand-bg rounded-2xl border border-slate-300/80 overflow-hidden card-shadow flex flex-col justify-between group">
+                                  <div className={`relative h-48 ${proj.colorTheme || 'bg-brand-navy text-white'} p-6 flex flex-col justify-between overflow-hidden`}>
+                                      <div className={`absolute top-0 left-0 ${idx % 2 === 0 ? 'bg-brand-orange text-white' : 'bg-brand-navy text-white'} font-display font-black text-xl px-4 py-2.5 rounded-br-2xl shadow-md`}>
+                                          0{idx + 1}
+                                      </div>
+                                      <div className="text-right font-mono text-[10px] opacity-70 uppercase tracking-widest pt-1">{proj.client}</div>
+                                      <div className="my-auto text-center font-mono">
+                                          <div className="w-12 h-12 rounded-xl bg-white/10 mx-auto flex items-center justify-center text-xl mb-2 border border-white/20">
+                                              <i className={`fa-solid ${proj.icon || 'fa-box'}`}></i>
+                                          </div>
+                                          <span className="text-xs font-semibold">{proj.title.split(' ').slice(0, 3).join(' ')}...</span>
+                                      </div>
+                                  </div>
+                                  <div className="p-6 space-y-4 flex-grow flex flex-col justify-between">
+                                      <div>
+                                          <span className="text-[10px] font-mono font-bold text-brand-orange uppercase tracking-wider">{proj.category}</span>
+                                          <h3 className="text-xl font-display font-bold text-brand-navy group-hover:text-brand-orange transition-colors mt-1">{proj.title}</h3>
+                                          <p className="text-slate-600 text-xs sm:text-sm mt-2 leading-relaxed line-clamp-3">{proj.summary}</p>
+                                      </div>
+                                      <div className="pt-4 border-t border-slate-300/60 flex items-center justify-between">
+                                          <span className="text-[11px] font-mono text-slate-500 truncate mr-2">{proj.tools}</span>
+                                          <button onClick={() => setActiveProject(proj)} className="w-8 h-8 rounded-full bg-white text-brand-navy group-hover:bg-brand-orange group-hover:text-white flex items-center justify-center transition-colors shadow-sm flex-shrink-0">
+                                              <i className="fa-solid fa-arrow-right text-xs"></i>
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+                          ))}
                       </div>
-                    </div>
-                  )}
-                </div>
+                  </div>
               </section>
 
-              {/* 5. SKILLS & SOFTWARE */}
-              <section className="py-24 px-6 bg-slate-50 border-t border-slate-100">
-                <div className="max-w-6xl mx-auto">
-                  <h3 className="text-3xl font-bold mb-4 text-slate-800 text-center">Keahlian & Perangkat Lunak</h3>
-                  <div className="w-16 h-1.5 bg-blue-600 rounded-full mb-16 mx-auto"></div>
-                  
-                  <div className="flex flex-wrap justify-center gap-3 md:gap-4 max-w-4xl mx-auto">
-                    {data?.masterSkills && data.masterSkills.length > 0 ? (
-                      data.masterSkills.map((skill, idx) => (
-                        <span key={idx} className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-xl shadow-sm font-medium hover:border-blue-300 hover:text-blue-600 transition-colors cursor-default">
-                          {typeof skill === 'string' ? skill : (skill.name || 'Skill')}
-                        </span>
-                      ))
-                    ) : (
-                      // Fallback
-                      ['Lean Six Sigma', 'Process Improvement', 'AutoCAD / Inventor', 'Power Query', 'Data Analysis (Excel)', 'Minitab', 'Production Planning'].map((skill, idx) => (
-                        <span key={idx} className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-xl shadow-sm font-medium hover:border-blue-300 hover:text-blue-600 transition-colors cursor-default">
-                          {skill}
-                        </span>
-                      ))
-                    )}
+              {/* SKILLS SECTION */}
+              <section id="skills" className="py-16 md:py-24 border-t border-slate-300/80">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+                      <div className="max-w-2xl">
+                          <span className="text-brand-orange text-xs font-mono font-bold uppercase tracking-widest">COMPETENCIES</span>
+                          <h2 className="text-3xl sm:text-4xl font-display font-black text-brand-navy uppercase tracking-tight mt-1">SKILLS & EXPERTISE</h2>
+                          <p className="text-slate-600 text-sm mt-2">Kombinasi keahlian teknik industri, metodologi kualitas, dan kemampuan pemrograman web.</p>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                          <div className="bg-white p-6 rounded-2xl border border-slate-300/80 card-shadow space-y-4">
+                              <div className="w-12 h-12 rounded-xl bg-brand-orange/10 text-brand-orange flex items-center justify-center text-xl"><i className="fa-solid fa-gears"></i></div>
+                              <h3 className="font-display font-bold text-brand-navy text-lg leading-tight">Industrial Engineering</h3>
+                              <div className="flex flex-wrap gap-2 pt-2">
+                                  {['MRP & BOM', 'WIP Tracking', 'Line Balancing', 'Time & Motion Study'].map(s => <span key={s} className="px-3 py-1.5 rounded-lg bg-brand-bg border border-slate-300 text-slate-700 font-mono text-[10px] font-semibold">{s}</span>)}
+                              </div>
+                          </div>
+                          <div className="bg-white p-6 rounded-2xl border border-slate-300/80 card-shadow space-y-4">
+                              <div className="w-12 h-12 rounded-xl bg-brand-navy/10 text-brand-navy flex items-center justify-center text-xl"><i className="fa-solid fa-code"></i></div>
+                              <h3 className="font-display font-bold text-brand-navy text-lg leading-tight">Web & Software Dev</h3>
+                              <div className="flex flex-wrap gap-2 pt-2">
+                                  {['JavaScript (ES6)', 'HTML & CSS', 'Tailwind', 'Google Apps Script'].map(s => <span key={s} className="px-3 py-1.5 rounded-lg bg-brand-bg border border-slate-300 text-slate-700 font-mono text-[10px] font-semibold">{s}</span>)}
+                              </div>
+                          </div>
+                          <div className="bg-white p-6 rounded-2xl border border-slate-300/80 card-shadow space-y-4">
+                              <div className="w-12 h-12 rounded-xl bg-brand-orange/10 text-brand-orange flex items-center justify-center text-xl"><i className="fa-solid fa-database"></i></div>
+                              <h3 className="font-display font-bold text-brand-navy text-lg leading-tight">Databases & Cloud</h3>
+                              <div className="flex flex-wrap gap-2 pt-2">
+                                  {['Firebase Realtime DB', 'Firestore', 'MySQL', 'REST API'].map(s => <span key={s} className="px-3 py-1.5 rounded-lg bg-brand-bg border border-slate-300 text-slate-700 font-mono text-[10px] font-semibold">{s}</span>)}
+                              </div>
+                          </div>
+                          <div className="bg-white p-6 rounded-2xl border border-slate-300/80 card-shadow space-y-4">
+                              <div className="w-12 h-12 rounded-xl bg-brand-navy/10 text-brand-navy flex items-center justify-center text-xl"><i className="fa-solid fa-chart-line"></i></div>
+                              <h3 className="font-display font-bold text-brand-navy text-lg leading-tight">Quality & Cont. Imp.</h3>
+                              <div className="flex flex-wrap gap-2 pt-2">
+                                  {['Lean Six Sigma', 'OEE / TPM', 'SPC & Minitab', '5S & Kaizen'].map(s => <span key={s} className="px-3 py-1.5 rounded-lg bg-brand-bg border border-slate-300 text-slate-700 font-mono text-[10px] font-semibold">{s}</span>)}
+                              </div>
+                          </div>
+                      </div>
                   </div>
-                </div>
               </section>
 
-              {/* MODAL / PROJECT DETAIL POPUP */}
-              {activeProject && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-                  <div className="absolute inset-0 bg-slate-900/90 backdrop-blur-sm transition-opacity" onClick={() => setActiveProject(null)}></div>
-                  <div className="relative bg-white w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl animate-fade-in-up">
-                    <button onClick={() => setActiveProject(null)} className="absolute top-6 right-6 p-3 bg-white/50 hover:bg-white text-slate-800 rounded-full z-20 shadow-lg backdrop-blur-md transition-transform hover:scale-110">
-                      <IconClose />
-                    </button>
-                    
-                    {/* Header Image */}
-                    <div className="h-64 sm:h-96 relative bg-slate-900">
-                      {activeProject.cover && (
-                        <img src={activeProject.cover} alt={activeProject.title} className="w-full h-full object-cover opacity-80" />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
-                      <div className="absolute bottom-8 left-8 right-8 md:bottom-12 md:left-12 text-white">
-                        <div className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-3 bg-blue-900/40 backdrop-blur-md inline-block px-3 py-1 rounded-full border border-blue-400/30">
-                          {activeProject.category || 'Project'}
-                        </div>
-                        <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">{activeProject.title}</h2>
+              {/* EXPERIENCE SECTION */}
+              <section id="experience" className="py-16 md:py-24 border-t border-slate-300/80 bg-white">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                      <div>
+                          <span className="text-brand-orange text-xs font-mono font-bold uppercase tracking-widest">CAREER HISTORY</span>
+                          <h2 className="text-3xl sm:text-4xl font-display font-black text-brand-navy uppercase tracking-tight mt-1">PENGALAMAN KERJA</h2>
                       </div>
-                    </div>
-                    
-                    {/* Content Detail (Sesuai Struktur PDF 9 Bagian yang disederhanakan) */}
-                    <div className="p-8 md:p-12">
-                      <div className="grid md:grid-cols-12 gap-12">
-                        {/* Kolom Kiri: Background, Scope, Roles */}
-                        <div className="md:col-span-7 space-y-10">
-                          {activeProject.detail?.background && (
-                            <div>
-                              <h4 className="flex items-center text-lg font-bold text-slate-900 border-b-2 border-slate-100 pb-3 mb-4">
-                                <span className="bg-blue-50 text-blue-600 p-1.5 rounded-lg mr-3 text-sm">🎯</span> Latar Belakang & Tujuan
-                              </h4>
-                              <div className="space-y-4 text-slate-600 leading-relaxed font-light">
-                                <p><strong className="text-slate-800 font-semibold block mb-1">Background:</strong> {activeProject.detail.background}</p>
-                                {activeProject.detail?.objectives && (
-                                  <p><strong className="text-slate-800 font-semibold block mb-1">Objectives:</strong> {activeProject.detail.objectives}</p>
-                                )}
+                      <div className="space-y-6">
+                          {data.experience.map(exp => (
+                              <div key={exp.id} className="p-6 md:p-8 rounded-2xl bg-brand-bg border border-slate-300/80 space-y-4 card-shadow">
+                                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-300/60 pb-4">
+                                      <div>
+                                          <h3 className="text-xl font-bold text-brand-navy font-display">{exp.role}</h3>
+                                          <p className={`${exp.color || 'text-brand-orange'} font-mono text-sm font-bold mt-0.5`}>{exp.company}</p>
+                                      </div>
+                                      <span className="px-3 py-1.5 rounded-lg bg-white text-slate-700 text-xs font-mono font-bold border border-slate-300 self-start md:self-auto">
+                                          <i className={`fa-regular ${exp.icon || 'fa-calendar-check'} mr-1.5 ${exp.color || 'text-brand-orange'}`}></i>{exp.period}
+                                      </span>
+                                  </div>
+                                  <ul className="space-y-2 text-slate-700 text-xs sm:text-sm leading-relaxed list-disc list-inside">
+                                      {renderList(exp.description)}
+                                  </ul>
                               </div>
-                            </div>
-                          )}
-                          
-                          {(activeProject.detail?.scope || activeProject.detail?.roles) && (
-                            <div>
-                              <h4 className="flex items-center text-lg font-bold text-slate-900 border-b-2 border-slate-100 pb-3 mb-4">
-                                <span className="bg-emerald-50 text-emerald-600 p-1.5 rounded-lg mr-3 text-sm">⚙️</span> Ruang Lingkup & Peran
-                              </h4>
-                              <div className="space-y-4 text-slate-600 leading-relaxed font-light">
-                                {activeProject.detail?.scope && <p><strong className="text-slate-800 font-semibold block mb-1">Scope:</strong> {activeProject.detail.scope}</p>}
-                                {activeProject.detail?.roles && <p><strong className="text-slate-800 font-semibold block mb-1">Roles:</strong> {activeProject.detail.roles}</p>}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Kolom Kanan: Metodologi, Hasil, Tools */}
-                        <div className="md:col-span-5 space-y-8">
-                          {activeProject.detail?.methodology && (
-                            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                              <h4 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-3">Metodologi</h4>
-                              <p className="text-slate-600 leading-relaxed font-light text-sm">{activeProject.detail.methodology}</p>
-                            </div>
-                          )}
-
-                          {activeProject.detail?.results && (
-                            <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg shadow-blue-900/10">
-                              <h4 className="text-sm font-bold text-blue-200 uppercase tracking-widest mb-3">Pencapaian (Results)</h4>
-                              <p className="font-medium leading-relaxed">{activeProject.detail.results}</p>
-                            </div>
-                          )}
-                          
-                          {activeProject.tools && activeProject.tools.length > 0 && (
-                            <div>
-                              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Tools & Software</h4>
-                              <div className="flex flex-wrap gap-2">
-                                {activeProject.tools.map((tool, i) => (
-                                  <span key={i} className="px-3 py-1 bg-white text-slate-600 rounded-lg text-xs font-bold border border-slate-200 shadow-sm">
-                                    {tool}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                          ))}
                       </div>
-                    </div>
                   </div>
-                </div>
-              )}
+              </section>
+
+              {/* EDUCATION & CERTIFICATION */}
+              <section id="education" className="py-16 md:py-24 border-t border-slate-300/80">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                          
+                          <div className="lg:col-span-7 space-y-8">
+                              <div>
+                                  <span className="text-brand-orange text-xs font-mono font-bold uppercase tracking-widest">ACADEMIC CREDENTIALS</span>
+                                  <h2 className="text-3xl font-display font-black text-brand-navy uppercase tracking-tight mt-1">PENDIDIKAN</h2>
+                              </div>
+                              {data.educations.map(edu => (
+                                  <div key={edu.id} className="p-6 md:p-8 rounded-2xl bg-white border border-slate-300/80 card-shadow space-y-6">
+                                      <div className="flex items-start justify-between">
+                                          <div>
+                                              <span className="px-3 py-1 rounded-full bg-brand-orange text-white text-[10px] font-mono font-bold uppercase">{edu.period}</span>
+                                              <h3 className="text-2xl font-bold text-brand-navy font-display mt-3">{edu.role}</h3>
+                                              <p className="text-brand-orange font-mono text-sm font-bold mt-1">{edu.name}</p>
+                                          </div>
+                                          <div className="w-12 h-12 rounded-xl bg-slate-100 text-brand-navy flex items-center justify-center text-2xl hidden sm:flex"><i className="fa-solid fa-graduation-cap"></i></div>
+                                      </div>
+                                      <div className="p-5 rounded-xl bg-brand-bg border border-slate-300/80 flex items-center justify-between">
+                                          <div>
+                                              <div className="text-xs font-mono text-slate-500 uppercase font-bold">Indeks Prestasi Kumulatif (IPK)</div>
+                                              <div className="text-4xl font-display font-black text-brand-navy mt-1">{edu.info} <span className="text-xs text-slate-500 font-sans font-normal">/ 4.00</span></div>
+                                          </div>
+                                          <div className="text-right">
+                                              <span className="inline-block px-3 py-1 rounded-md bg-emerald-100 text-emerald-800 text-[10px] sm:text-xs font-mono font-bold">
+                                                  <i className="fa-solid fa-star text-emerald-600 mr-1"></i>Predikat Pujian
+                                              </span>
+                                          </div>
+                                      </div>
+                                      <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">{edu.focus}</p>
+                                  </div>
+                              ))}
+                          </div>
+
+                          <div className="lg:col-span-5 space-y-8">
+                              <div>
+                                  <span className="text-brand-orange text-xs font-mono font-bold uppercase tracking-widest">PROFESSIONAL LICENSES</span>
+                                  <h2 className="text-3xl font-display font-black text-brand-navy uppercase tracking-tight mt-1">SERTIFIKASI</h2>
+                              </div>
+                              <div className="space-y-4">
+                                  {data.certifications.map((cert, idx) => (
+                                      <div key={cert.id} className={`p-6 rounded-2xl ${idx === 0 ? 'bg-brand-navy text-white shadow-lg' : 'bg-white border border-slate-300/80 card-shadow'} space-y-3`}>
+                                          <div className={`flex items-center justify-between ${idx === 0 ? 'text-brand-orange' : 'text-brand-navy'} font-mono text-xs font-bold`}>
+                                              <span>{cert.type}</span><i className={`fa-solid ${cert.icon} text-lg`}></i>
+                                          </div>
+                                          <h3 className={`font-display font-bold text-base sm:text-lg ${idx === 0 ? '' : 'text-brand-navy'}`}>{cert.name}</h3>
+                                          <p className={`${idx === 0 ? 'text-slate-300' : 'text-slate-600'} text-xs leading-relaxed`}>{cert.desc}</p>
+                                      </div>
+                                  ))}
+                              </div>
+                          </div>
+
+                      </div>
+                  </div>
+              </section>
+
+              {/* DMAIC METHODOLOGY */}
+              <section className="py-16 md:py-20 border-t border-slate-300/80">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                      <div className="text-center max-w-2xl mx-auto space-y-2">
+                          <span className="text-brand-orange text-xs font-mono font-bold uppercase tracking-widest">CONTINUOUS IMPROVEMENT</span>
+                          <h2 className="text-3xl sm:text-4xl font-display font-black text-brand-navy uppercase tracking-tight">ENGINEERING METHODOLOGY</h2>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                          {['DEFINE', 'MEASURE', 'ANALYZE', 'IMPROVE', 'CONTROL'].map((step, i) => (
+                              <div key={step} className="text-center space-y-3">
+                                  <div className={`w-14 h-14 rounded-full ${i % 2 === 0 ? 'bg-brand-orange' : 'bg-brand-navy'} text-white font-display font-black text-lg mx-auto flex items-center justify-center shadow-md`}>0{i+1}</div>
+                                  <h3 className="font-display font-bold text-brand-navy uppercase text-sm">{step}</h3>
+                              </div>
+                          ))}
+                      </div>
+                  </div>
+              </section>
 
               {/* FOOTER */}
-              <footer className="bg-slate-900 text-slate-400 py-12 text-center border-t border-slate-800 mt-auto">
-                <div className="max-w-6xl mx-auto px-6">
-                  <p className="font-light text-sm">© {new Date().getFullYear()} {data?.hero?.name}. All rights reserved.</p>
-                </div>
+              <footer id="contact" className="relative z-10 border-t border-slate-300">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                      <div className="relative rounded-3xl bg-brand-navy text-white p-8 sm:p-12 overflow-hidden shadow-2xl">
+                          <div className="absolute -right-16 -bottom-16 w-72 h-72 bg-brand-orange rounded-full pointer-events-none opacity-90"></div>
+                          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+                              <div className="lg:col-span-5 space-y-4">
+                                  <h2 className="text-3xl sm:text-4xl font-display font-black uppercase tracking-tight leading-tight">
+                                      LET'S CREATE <br/><span className="text-brand-orange">SOMETHING</span> <br/>EXTRAORDINARY!
+                                  </h2>
+                                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">Terbuka untuk kesempatan karir Teknik Industri, perancangan sistem produksi, dan pengembangan software industri.</p>
+                              </div>
+                              <div className="lg:col-span-4 space-y-3 font-mono text-xs text-slate-200">
+                                  <div className="text-brand-orange font-bold uppercase tracking-wider">HUBUNGI SAYA</div>
+                                  <div className="flex items-center gap-3"><i className="fa-solid fa-envelope text-brand-orange"></i><span>{data.hero.email}</span></div>
+                                  <div className="flex items-center gap-3"><i className="fa-solid fa-phone text-brand-orange"></i><span>{data.hero.phone}</span></div>
+                                  <div className="flex items-center gap-3"><i className="fa-solid fa-location-dot text-brand-orange"></i><span>{data.hero.location}</span></div>
+                              </div>
+                              <div className="lg:col-span-3 flex flex-col items-start lg:items-end justify-center space-y-4">
+                                  <div className="text-xs font-mono font-bold text-white uppercase tracking-wider">MEDIA SOSIAL</div>
+                                  <div className="flex items-center gap-3">
+                                      <a href="#" className="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-orange text-white flex items-center justify-center transition-colors"><i className="fa-brands fa-linkedin-in"></i></a>
+                                      <a href="#" className="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-orange text-white flex items-center justify-center transition-colors"><i className="fa-brands fa-github"></i></a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-slate-500 gap-4">
+                          <div>© {new Date().getFullYear()} {data.hero.name} All Rights Reserved.</div>
+                      </div>
+                  </div>
               </footer>
+
+              {/* PROJECT DETAIL MODAL */}
+              {activeProject && (
+                  <div className="fixed inset-0 z-50 bg-brand-navy/60 backdrop-blur-sm flex items-center justify-center p-4">
+                      <div className="bg-white rounded-2xl p-6 md:p-8 max-w-xl w-full space-y-6 shadow-2xl border border-slate-300 max-h-[90vh] overflow-y-auto animate-fade-in-up">
+                          <div className="flex items-start justify-between border-b border-slate-200 pb-4">
+                              <div>
+                                  <span className="text-xs font-mono font-bold text-brand-orange">{activeProject.category}</span>
+                                  <h3 className="text-brand-navy font-display font-bold text-2xl mt-0.5">{activeProject.title}</h3>
+                              </div>
+                              <button onClick={() => setActiveProject(null)} className="text-slate-400 hover:text-slate-700 p-1">
+                                  <i className="fa-solid fa-xmark text-xl"></i>
+                              </button>
+                          </div>
+                          <div className="space-y-4 text-slate-700 text-xs sm:text-sm leading-relaxed font-sans">
+                              {activeProject.detail?.background && <p><strong>Latar Belakang:</strong><br/>{activeProject.detail.background}</p>}
+                              {activeProject.detail?.scope && (
+                                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-300 font-mono text-xs text-brand-navy space-y-1">
+                                      {renderList(activeProject.detail.scope)}
+                                  </div>
+                              )}
+                              {activeProject.detail?.results && <p><strong>Hasil:</strong><br/>{activeProject.detail.results}</p>}
+                          </div>
+                          <div className="flex items-center justify-end pt-4 border-t border-slate-200">
+                              <button onClick={() => setActiveProject(null)} className="px-6 py-2.5 rounded-xl bg-brand-navy text-white font-bold text-xs uppercase font-mono hover:bg-brand-orange transition-colors">Tutup Detail</button>
+                          </div>
+                      </div>
+                  </div>
+              )}
+
+              {/* RESUME MODAL */}
+              {showResume && (
+                  <div className="fixed inset-0 z-50 bg-brand-navy/60 backdrop-blur-sm flex items-center justify-center p-4">
+                      <div className="bg-white rounded-2xl p-6 max-w-md w-full space-y-6 shadow-2xl border border-slate-300 animate-fade-in-up">
+                          <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+                              <div className="flex items-center gap-2">
+                                  <i className="fa-solid fa-file-pdf text-brand-orange"></i>
+                                  <h3 className="font-display font-bold text-brand-navy text-lg">CURRICULUM VITAE</h3>
+                              </div>
+                              <button onClick={() => setShowResume(false)} className="text-slate-400 hover:text-slate-700 p-1">
+                                  <i className="fa-solid fa-xmark text-lg"></i>
+                              </button>
+                          </div>
+                          <div className="space-y-3 text-slate-600 text-xs sm:text-sm">
+                              <p>Dokumen Curriculum Vitae lengkap untuk <strong className="text-brand-navy">{data.hero.name}</strong></p>
+                              <div className="p-4 rounded-xl bg-slate-50 border border-slate-300 font-mono text-xs space-y-1 text-slate-700">
+                                  <div>• Pendidikan: S1 Teknik Industri</div>
+                                  <div>• Keahlian Utama: Industrial System & Code</div>
+                              </div>
+                          </div>
+                          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
+                              <button onClick={() => setShowResume(false)} className="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-mono text-xs font-bold">Batal</button>
+                              <button onClick={() => { alert('Fungsi download CV dapat disambungkan ke link G-Drive Anda.'); setShowResume(false); }} className="px-5 py-2 rounded-lg bg-brand-orange text-white font-mono font-bold text-xs hover:bg-brand-orangeDark transition-colors flex items-center gap-2">
+                                  <i className="fa-solid fa-download"></i><span>Unduh CV</span>
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+              )}
             </div>
           );
         };
@@ -962,7 +881,6 @@
                 
                 setFbApi({ doc, setDoc });
                 
-                // Konfigurasi Asli Firebase
                 const firebaseConfig = {
                   apiKey: "AIzaSyB0gq5a09YMfxIHCDJUa833CuS6JM4-r0M",
                   authDomain: "portooooo-8ffd1.firebaseapp.com",
@@ -975,7 +893,7 @@
 
                 const firestoreDb = getFirestore(initializeApp(firebaseConfig));
                 setDb(firestoreDb);
-                const docRef = doc(firestoreDb, 'portfolio', 'main_data');
+                const docRef = doc(firestoreDb, 'portfolio_v2', 'main_data'); // Changed doc name to avoid conflicting old data structure
                 
                 const docSnap = await getDoc(docRef);
                 if (!docSnap.exists()) await setDoc(docRef, initialData);
@@ -990,7 +908,7 @@
 
           const handleSaveData = async (newData) => {
             setPortfolioData(newData);
-            if (db && fbApi) await fbApi.setDoc(fbApi.doc(db, 'portfolio', 'main_data'), newData);
+            if (db && fbApi) await fbApi.setDoc(fbApi.doc(db, 'portfolio_v2', 'main_data'), newData);
           };
 
           return view === 'public' 
